@@ -1,0 +1,261 @@
+{% extends "student.html" %}
+
+{% block title %}Settings - LJCourses{% endblock %}
+
+{% set active_page = 'settings' %}
+
+<!-- Settings CSS -->
+{% block styles %}
+<link href="{{ url_for('static', filename='css/settings.css' ) }}" rel="stylesheet" />{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="max-width: 60rem;">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="h3 fw-bold mb-2">Settings</h2>
+        <p class="text-secondary mb-0">Manage your account preferences and security settings.</p>
+    </div>
+
+    <!-- Settings Sections -->
+    <div class="vstack gap-4">
+        <!-- Profile Settings -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary">person</span>
+                    Profile Settings
+                </h5>
+                <div class="vstack gap-4">
+                    <div class="d-flex flex-column flex-sm-row align-items-center gap-3">
+                        <div class="position-relative">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo"
+                                class="rounded-circle border border-3"
+                                style="width: 6rem; height: 6rem; object-fit: cover;" alt="Profile">
+                            <button class="btn btn-primary rounded-circle position-absolute d-flex align-items-center"
+                                style="bottom: 0; right: 0;padding: 0.4rem;">
+                                <span class="material-icons" style="font-size: 1.1rem;">photo_camera</span>
+                            </button>
+                        </div>
+                        <div class="flex-grow-1 text-center text-sm-start">
+                            <h6 class="fw-semibold mb-1">Profile Picture</h6>
+                            <p class="text-secondary small mb-2">Update your photo. Recommended size:
+                                400x400px.</p>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-sm-start">
+                                <button class="btn btn-outline-secondary btn-sm">Change Photo</button>
+                                <button class="btn btn-link btn-sm text-danger text-decoration-none">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label fw-semibold small">Public Bio</label>
+                        <textarea class="form-control" rows="4"
+                            placeholder="Tell us a little about yourself..."></textarea>
+                        <p class="form-text">This will be visible on your public student profile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Preferences -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary">notifications</span>
+                    Notification Preferences
+                </h5>
+                <div class="vstack gap-3">
+                    <div class="d-flex justify-content-between align-items-center py-2">
+                        <div>
+                            <p class="fw-semibold mb-1">Email Notifications</p>
+                            <p class="text-secondary small mb-0">Receive updates about your courses via
+                                email.</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-top">
+                        <div>
+                            <p class="fw-semibold mb-1">Push Notifications</p>
+                            <p class="text-secondary small mb-0">Get instant alerts on your desktop or
+                                mobile device.</p>
+                        </div>
+                        <div class="form-check form-switch ms-3">
+                            <input class="form-check-input" type="checkbox">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-top">
+                        <div>
+                            <p class="fw-semibold mb-1">Course Deadlines</p>
+                            <p class="text-secondary small mb-0">Reminders about upcoming assignments and
+                                quizzes.</p>
+                        </div>
+                        <div class="form-check form-switch ms-3">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary">palette</span>
+                    Appearance
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="theme-card active" id="lightThemeCard" onclick="selectTheme('light')">
+                            <div class="theme-preview bg-light p-3 rounded-top">
+                                <div class="w-100 rounded mb-2" style="height: 0.5rem; background-color: white;"></div>
+                                <div class="w-75 rounded mb-2" style="height: 0.5rem; background-color: white;"></div>
+                                <div class="d-flex gap-2 mt-3">
+                                    <div class="rounded-circle bg-primary" style="width: 2rem; height: 2rem;"></div>
+                                    <div class="rounded border"
+                                        style="width: 5rem; height: 2rem; background-color: white;"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                                <span class="fw-semibold small">Light Theme</span>
+                                <span class="material-icons text-primary theme-check-icon">check_circle</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="theme-card" id="darkThemeCard" onclick="selectTheme('dark')">
+                            <div class="theme-preview bg-dark p-3 rounded-top">
+                                <div class="w-100 rounded mb-2" style="height: 0.5rem; background-color: #374151;">
+                                </div>
+                                <div class="w-75 rounded mb-2" style="height: 0.5rem; background-color: #374151;"></div>
+                                <div class="d-flex gap-2 mt-3">
+                                    <div class="rounded-circle"
+                                        style="width: 2rem; height: 2rem; background-color: #3b82f6;"></div>
+                                    <div class="rounded"
+                                        style="width: 5rem; height: 2rem; background-color: #1f2937; border: 1px solid #374151;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                                <span class="fw-semibold small">Dark Theme</span>
+                                <span
+                                    class="material-icons text-secondary theme-uncheck-icon">radio_button_unchecked</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function selectTheme(theme) {
+                const lightCard = document.getElementById('lightThemeCard');
+                const darkCard = document.getElementById('darkThemeCard');
+
+                if (theme === 'light') {
+                    // Set light theme
+                    document.documentElement.setAttribute('data-bs-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+
+                    // Update active states
+                    lightCard.classList.add('active');
+                    darkCard.classList.remove('active');
+
+                    // Update icons
+                    lightCard.querySelector('.theme-check-icon').classList.remove('text-secondary');
+                    lightCard.querySelector('.theme-check-icon').classList.add('text-primary');
+                    lightCard.querySelector('.theme-check-icon').textContent = 'check_circle';
+
+                    darkCard.querySelector('.theme-uncheck-icon').classList.remove('text-primary');
+                    darkCard.querySelector('.theme-uncheck-icon').classList.add('text-secondary');
+                    darkCard.querySelector('.theme-uncheck-icon').textContent = 'radio_button_unchecked';
+                } else {
+                    // Set dark theme
+                    document.documentElement.setAttribute('data-bs-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+
+                    // Update active states
+                    darkCard.classList.add('active');
+                    lightCard.classList.remove('active');
+
+                    // Update icons
+                    darkCard.querySelector('.theme-uncheck-icon').classList.remove('text-secondary');
+                    darkCard.querySelector('.theme-uncheck-icon').classList.add('text-primary');
+                    darkCard.querySelector('.theme-uncheck-icon').textContent = 'check_circle';
+
+                    lightCard.querySelector('.theme-check-icon').classList.remove('text-primary');
+                    lightCard.querySelector('.theme-check-icon').classList.add('text-secondary');
+                    lightCard.querySelector('.theme-check-icon').textContent = 'radio_button_unchecked';
+                }
+            }
+        </script>
+
+        <!-- Security -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary">security</span>
+                    Security
+                </h5>
+                <div class="vstack gap-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 p-3 border rounded">
+                        <div>
+                            <p class="fw-semibold mb-1">Change Password</p>
+                            <p class="text-secondary small mb-0">It's a good idea to use a strong password
+                                that you don't use elsewhere.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm align-self-sm-center">Change Password</button>
+                    </div>
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 p-3 border rounded">
+                        <div>
+                            <p class="fw-semibold mb-1">Two-Factor Authentication</p>
+                            <p class="text-secondary small mb-0">Add an extra layer of security to your
+                                account.</p>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm align-self-sm-center">Enable
+                            2FA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language & Region -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary">language</span>
+                    Language & Region
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Preferred Language</label>
+                        <select class="form-select">
+                            <option selected>English (US)</option>
+                            <option>Spanish</option>
+                            <option>French</option>
+                            <option>German</option>
+                            <option>Mandarin</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Time Zone</label>
+                        <select class="form-select">
+                            <option selected>(GMT-08:00) Pacific Time</option>
+                            <option>(GMT-05:00) Eastern Time</option>
+                            <option>(GMT+00:00) London</option>
+                            <option>(GMT+01:00) Paris</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end gap-3 py-4">
+            <button class="btn btn-outline-secondary px-4">Cancel</button>
+            <button class="btn btn-primary px-5 shadow-sm">Save Changes</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

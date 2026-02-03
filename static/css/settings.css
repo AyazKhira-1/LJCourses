@@ -1,0 +1,57 @@
+/* ============================================
+   SETTINGS PAGE STYLES
+   ============================================ */
+
+/* Form Switches */
+.form-check-input {
+    width: 3rem !important;
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+/* Theme Cards */
+.theme-card {
+    border: 2px solid transparent;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.theme-card:hover {
+    border-color: #d1d5db;
+}
+
+.theme-card.active {
+    border-color: var(--primary-color);
+}
+
+.theme-preview {
+    height: 8rem;
+}
+
+/* Dark Theme */
+[data-bs-theme="dark"] .theme-card {
+    background-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .theme-card:hover {
+    border-color: #4b5563;
+}
+
+[data-bs-theme="dark"] .theme-card.active {
+    border-color: var(--primary-color);
+}
+
+[data-bs-theme="dark"] .form-check-input:checked {
+    background-color: var(--primary-color);
+}

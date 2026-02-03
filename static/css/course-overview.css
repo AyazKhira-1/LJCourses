@@ -1,0 +1,124 @@
+/* ============================================
+   COURSE OVERVIEW PAGE STYLES
+   ============================================ */
+
+.back-link:hover .material-icons {
+    color: var(--primary-color);
+}
+
+.back-link:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color) !important;
+}
+
+/* Expectations list markers */
+.course-section-card ul li::marker {
+    color: var(--primary-color);
+}
+
+/* Icon boxes */
+.icon-box {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-box-blue {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
+.icon-box-green {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.icon-box-purple {
+    background-color: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.icon-box-orange {
+    background-color: rgba(251, 146, 60, 0.1);
+    color: #fb923c;
+}
+
+.icon-box-indigo {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.icon-box-teal {
+    background-color: rgba(20, 184, 166, 0.1);
+    color: #14b8a6;
+}
+
+/* Dark theme icon boxes */
+[data-bs-theme="dark"] .icon-box-blue {
+    background-color: rgba(37, 99, 235, 0.2);
+}
+
+[data-bs-theme="dark"] .icon-box-green {
+    background-color: rgba(34, 197, 94, 0.2);
+}
+
+[data-bs-theme="dark"] .icon-box-purple {
+    background-color: rgba(168, 85, 247, 0.2);
+}
+
+[data-bs-theme="dark"] .icon-box-orange {
+    background-color: rgba(251, 146, 60, 0.2);
+}
+
+[data-bs-theme="dark"] .icon-box-indigo {
+    background-color: rgba(99, 102, 241, 0.2);
+}
+
+[data-bs-theme="dark"] .icon-box-teal {
+    background-color: rgba(20, 184, 166, 0.2);
+}
+
+/* Course section cards */
+.course-section-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Topic badges */
+.badge.bg-light {
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+    font-weight: 500;
+}
+
+[data-bs-theme="dark"] .badge.bg-light {
+    background-color: #374151 !important;
+    color: #e5e7eb !important;
+    border-color: #4b5563 !important;
+}
+
+/* Dark theme for course overview */
+[data-bs-theme="dark"] .course-section-card {
+    background-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .course-section-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Button with icon only */
+.btn-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

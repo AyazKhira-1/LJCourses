@@ -1,0 +1,187 @@
+/* ============================================
+   LESSON PAGE STYLES
+   ============================================ */
+
+/* Brand Text */
+.brand-text {
+    color: #000 !important;
+}
+
+[data-bs-theme="dark"] .brand-text {
+    color: #fff !important;
+}
+
+/* Lesson page font */
+body.lesson-page {
+    font-family: 'Lexend', sans-serif !important;
+}
+
+.profile-image:hover {
+    border-color: var(--primary-color) !important;
+}
+
+/* Video Player */
+.video-player {
+    background-color: #000;
+}
+
+.play-button-overlay {
+    z-index: 10;
+}
+
+.play-button-overlay .btn {
+    width: 5rem;
+    height: 5rem;
+    transition: all 0.3s;
+}
+
+.play-button-overlay .btn:hover {
+    transform: scale(1.1);
+}
+
+/* Dark theme for video */
+[data-bs-theme="dark"] .video-player img {
+    opacity: 0.8;
+}
+
+/* Breadcrumb */
+.breadcrumb-item a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primary-color);
+}
+
+[data-bs-theme="dark"] .breadcrumb-item a {
+    color: #9ca3af;
+}
+
+/* Tabs */
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.nav-tabs .nav-link {
+    color: #6c757d;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 1rem 1.25rem;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: #212529;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background-color: transparent;
+}
+
+[data-bs-theme="dark"] .nav-tabs {
+    border-bottom-color: #374151 !important;
+}
+
+[data-bs-theme="dark"] .nav-tabs .nav-link {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .nav-tabs .nav-link:hover {
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .nav-tabs .nav-link.active {
+    color: var(--primary-color);
+}
+
+/* Sidebar */
+.sidebar-right {
+    flex-shrink: 0;
+}
+
+[data-bs-theme="dark"] .sidebar-right {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+/* Module sections */
+.module-header {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.module-header:hover {
+    background-color: #e9ecef !important;
+}
+
+[data-bs-theme="dark"] .module-header {
+    background-color: rgba(75, 85, 99, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .module-header:hover {
+    background-color: rgba(75, 85, 99, 0.5) !important;
+}
+
+/* Lesson items */
+.lesson-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.lesson-item:hover {
+    background-color: #f8f9fa;
+}
+
+.lesson-item.active {
+    background-color: rgba(26, 115, 232, 0.05);
+}
+
+.lesson-item.completed {
+    opacity: 0.85;
+}
+
+[data-bs-theme="dark"] .lesson-item {
+    background-color: #1f2937;
+    border-color: #374151 !important;
+}
+
+[data-bs-theme="dark"] .lesson-item:hover {
+    background-color: #374151;
+}
+
+[data-bs-theme="dark"] .lesson-item.active {
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+/* Dark theme for cards */
+[data-bs-theme="dark"] .card {
+    background-color: #1f2937;
+    border-color: #374151 !important;
+}
+
+[data-bs-theme="dark"] .bg-light {
+    background-color: rgba(75, 85, 99, 0.3) !important;
+}
+
+/* Progress bar */
+.progress {
+    background-color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .progress {
+    background-color: #374151;
+}
+
+/* Header dark theme */
+[data-bs-theme="dark"] header.bg-white {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+/* Main content dark theme */
+[data-bs-theme="dark"] main.bg-light {
+    background-color: #111827 !important;
+}

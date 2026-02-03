@@ -1,0 +1,23 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments (uv)
+.venv/
+.uv/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Database (local)
+*.db

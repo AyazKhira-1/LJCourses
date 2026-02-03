@@ -1,0 +1,320 @@
+/* ============================================
+   COMMON STYLES - SHARED ACROSS ALL PAGES
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    --primary-color: #1A73E8;
+    --primary-dark-color: #1557b0;
+    --bg-light: #F3F4F6;
+    --bg-dark: #0F172A;
+    --card-light: #FFFFFF;
+    --card-dark: #1E293B;
+    --text-dark: #111827;
+    --text-light: #F9FAFB;
+}
+
+/* Body Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+[data-bs-theme="dark"] body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Navbar Styles */
+.navbar {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+[data-bs-theme="dark"] .navbar {
+    background-color: rgba(30, 41, 59, 0.8);
+    border-bottom: 1px solid #374151;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #111827;
+}
+
+[data-bs-theme="dark"] .navbar-brand {
+    color: #fff;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #4b5563;
+}
+
+[data-bs-theme="dark"] .nav-link {
+    color: #d1d5db;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark-color);
+    border-color: var(--primary-dark-color);
+}
+
+.btn-outline-secondary-custom {
+    background-color: var(--card-light);
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary-custom {
+    background-color: var(--card-dark);
+    color: #fff;
+    border-color: #4b5563;
+}
+
+.btn-outline-secondary-custom:hover {
+    border-color: var(--primary-color);
+}
+
+/* Custom Utilities */
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+/* Card Styles */
+.card-custom {
+    background-color: var(--card-light);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .card-custom {
+    background-color: var(--card-dark);
+}
+
+.card-custom:hover {
+    background-color: #fff;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+}
+
+[data-bs-theme="dark"] .card-custom:hover {
+    background-color: #2d3748;
+    border-color: #374151;
+}
+
+/* Section Backgrounds */
+.bg-section-alt {
+    background-color: #fff;
+}
+
+[data-bs-theme="dark"] .bg-section-alt {
+    background-color: #111827;
+}
+
+/* Stars/Rating Colors */
+.text-warning-custom {
+    color: #facc15;
+}
+
+/* Footer Styles */
+.footer-custom {
+    background-color: var(--card-light);
+    border-top: 1px solid #f3f4f6;
+}
+
+[data-bs-theme="dark"] .footer-custom {
+    background-color: var(--card-dark);
+    border-top: 1px solid #1f2937;
+}
+
+/* Dark Mode Toggle Icon Visibility */
+[data-bs-theme="dark"] .icon-dark-mode {
+    display: none;
+}
+
+[data-bs-theme="light"] .icon-light-mode {
+    display: none;
+}
+
+/* ============================================
+   SIGNUP/LOGIN PAGE SPECIFIC STYLES
+   ============================================ */
+
+/* Main flex container */
+body.d-flex.flex-column,
+body {
+    min-height: 100vh;
+}
+
+/* Signup/Login container */
+.signup-container {
+    width: 100%;
+    max-width: 75rem;
+    background-color: var(--card-light);
+}
+
+[data-bs-theme="dark"] .signup-container {
+    background-color: var(--card-dark);
+}
+
+.min-vh-content {
+    min-height: 700px;
+}
+
+/* Hero Section - Left side with gradient */
+.hero-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1A73E8 100%);
+    position: relative;
+}
+
+/* Glass Badge */
+.glass-badge {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+/* Text Utilities */
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Avatar Group */
+.avatar-group {
+    margin-left: -0.75rem;
+}
+
+.avatar-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid white;
+    object-fit: cover;
+    margin-left: -0.75rem;
+}
+
+[data-bs-theme="dark"] .avatar-img {
+    border-color: var(--card-dark);
+}
+
+/* Form Section - Right side */
+.form-section {
+    background-color: var(--card-light);
+}
+
+[data-bs-theme="dark"] .form-section {
+    background-color: var(--card-dark);
+}
+
+.form-section h2 {
+    color: var(--text-dark);
+}
+
+[data-bs-theme="dark"] .form-section h2 {
+    color: var(--text-light);
+}
+
+.form-section .text-muted {
+    color: #6B7280 !important;
+}
+
+[data-bs-theme="dark"] .form-section .text-muted {
+    color: #9CA3AF !important;
+}
+
+/* Google Icon */
+.google-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Z-index utility */
+.z-1 {
+    z-index: 1;
+}
+
+/* Navbar brand text */
+.navbar-brand-text {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-dark);
+    font-size: 1.25rem;
+}
+
+[data-bs-theme="dark"] .navbar-brand-text {
+    color: var(--text-light);
+}
+
+/* Primary background color */
+.bg-primary {
+    background-color: #1A73E8 !important;
+}
+
+/* Theme toggle button icons */
+.icon-light-mode,
+.icon-dark-mode {
+    font-size: 1.25rem;
+    transition: all 0.3s;
+}
+
+/* Animated Blobs */
+@keyframes blob {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+.blob-shape {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    filter: blur(3rem);
+    animation: blob 7s infinite;
+    pointer-events: none;
+}
+
+.blob-blue {
+    background-color: rgba(59, 130, 246, 0.3);
+}
+
+.blob-purple {
+    background-color: rgba(168, 85, 247, 0.3);
+    animation-delay: 2s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .hero-section {
+        min-height: 400px;
+    }
+
+    .min-vh-content {
+        min-height: auto;
+    }
+}

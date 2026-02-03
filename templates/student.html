@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Common CSS -->
+    <link href="{{ url_for('static', filename='css/common.css' ) }}" rel="stylesheet" />
+    <!-- my-courses CSS -->
+    <link href="{{ url_for('static', filename='css/my-courses.css' ) }}" rel="stylesheet" />
+
+    {% block styles %}{% endblock %}
+</head>
+
+<body class="d-flex vh-100 overflow-hidden my-courses-page">
+    <!-- Side Navigation -->
+    <aside class="sidebar d-none d-lg-flex flex-column border-end bg-white shadow-sm">
+        <div class="d-flex flex-column h-100 justify-content-between p-4">
+            <div class="d-flex flex-column gap-4">
+                <!-- Brand -->
+                <a class="navbar-brand d-flex align-items-center gap-1 p-2" href="#">
+                    <div class="brand-icon bg-opacity-10 d-flex align-items-center justify-content-center">
+                        <span class="material-icons text-primary-custom fs-2">school</span>
+                    </div>
+                    <h1 class="brand-title mb-0">LJCourses</h1>
+                </a>
+                <!-- Navigation Links -->
+                <nav class="d-flex flex-column gap-2">
+                    <a class="nav-link-item {% if active_page == 'my_courses' %}active{% endif %}"
+                        href="{{ url_for('my_courses') }}">
+                        <span class="material-icons fill-1">dashboard</span>
+                        <span>My Courses</span>
+                    </a>
+                    <a class="nav-link-item {% if active_page == 'browse_courses' %}active{% endif %}"
+                        href="{{ url_for('browse_courses') }}">
+                        <span class="material-icons">search</span>
+                        <span>Browse Courses</span>
+                    </a>
+                    <a class="nav-link-item {% if active_page == 'settings' %}active{% endif %}"
+                        href="{{ url_for('settings') }}">
+                        <span class="material-icons">settings</span>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Bottom Action -->
+            <div class="border-top pt-3">
+                <a class="nav-link-item nav-link-danger" href="{{ url_for('home') }}">
+                    <span class="material-icons">logout</span>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Sidebar (Offcanvas) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+        <div class="offcanvas-header border-bottom">
+            <a class="navbar-brand d-flex align-items-center gap-1" href="#">
+                <div class="brand-icon bg-opacity-10 d-flex align-items-center justify-content-center rounded-3">
+                    <span class="material-icons text-primary-custom fs-2">school</span>
+                </div>
+                <h5 class="brand-title mb-0">LJCourses</h5>
+            </a>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between">
+            <nav class="d-flex flex-column gap-2">
+                <a class="nav-link-item {% if active_page == 'my_courses' %}active{% endif %}"
+                    href="{{ url_for('my_courses') }}" data-bs-dismiss="offcanvas">
+                    <span class="material-icons fill-1">dashboard</span>
+                    <span>My Courses</span>
+                </a>
+                <a class="nav-link-item {% if active_page == 'browse_courses' %}active{% endif %}"
+                    href="{{ url_for('browse_courses') }}" data-bs-dismiss="offcanvas">
+                    <span class="material-icons">search</span>
+                    <span>Browse Courses</span>
+                </a>
+                <a class="nav-link-item {% if active_page == 'settings' %}active{% endif %}"
+                    href="{{ url_for('settings') }}" data-bs-dismiss="offcanvas">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="border-top pt-3 mt-auto">
+                <a class="nav-link-item nav-link-danger" href="{{ url_for('home') }}" data-bs-dismiss="offcanvas">
+                    <span class="material-icons">logout</span>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-fill d-flex flex-column min-w-0 position-relative bg-light">
+        <!-- Top Header -->
+        <header class="sticky-top border-bottom bg-white bg-opacity-90">
+            <div class="container-fluid px-4">
+                <div class="row align-items-center py-3">
+                    <!-- Mobile Menu & Logo -->
+                    <div class="col-auto d-lg-none">
+                        <button class="btn btn-link text-secondary p-0" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#mobileSidebar">
+                            <span class="material-icons">menu</span>
+                        </button>
+                    </div>
+                    <div class="col d-lg-none">
+                        <a class="navbar-brand d-flex align-items-center gap-1" href="#">
+                            <div class="bg-opacity-10 d-flex align-items-center justify-content-center rounded-2"
+                                style="width: 2rem; height: 2rem;">
+                                <span class="material-icons text-primary-custom fs-2">school</span>
+                            </div>
+                            <span class="fw-bold fs-5">LJCourses</span>
+                        </a>
+                    </div>
+
+                    <!-- Search Bar (Desktop) -->
+                    <div class="col-auto d-none d-lg-block me-auto">
+                        <div class="position-relative" style="width: 25rem;">
+                            <span
+                                class="material-icons position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">search</span>
+                            <input type="search" class="form-control ps-5" placeholder="Search courses..."
+                                style="height: 2.5rem;" />
+                        </div>
+                    </div>
+
+                    <!-- Right Side Actions -->
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn btn-link p-2 text-secondary" onclick="toggleDarkMode()"
+                                aria-label="Toggle Theme">
+                                <span class="material-icons icon-dark-mode">wb_sunny</span>
+                                <span class="material-icons icon-light-mode">nightlight</span>
+                            </button>
+
+                            <div class="vr d-none d-sm-block" style="height: 2rem;"></div>
+
+                            <!-- User Profile -->
+                            <a href="{{ url_for('profile') }}"
+                                class="d-flex align-items-center gap-3 text-decoration-none">
+                                <div class="text-end d-none d-sm-block">
+                                    <p class="mb-0 fw-bold small text-secondary">Sarah J.</p>
+                                    <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Student</p>
+                                </div>
+                                <div class="rounded-circle bg-image border border-2 border-white shadow-sm profile-image"
+                                    style='width: 2.5rem; height: 2.5rem; background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo");'>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Search Bar -->
+                <div class="row d-lg-none mt-2">
+                    <div class="position-relative" style="width: 20rem;">
+                        <span
+                            class="material-icons position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">search</span>
+                        <input type="search" class="form-control ps-5" placeholder="Search courses..."
+                            style="height: 2.5rem;" />
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-fill overflow-auto p-4 p-md-5">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- Common JS -->
+    <script src="{{ url_for('static', filename='js/common.js' ) }}"></script>
+</body>
+
+</html>

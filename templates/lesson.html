@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Course Lesson - LJCourses</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Common CSS -->
+    <link href="{{ url_for('static', filename='css/common.css' ) }}" rel="stylesheet" />
+    <!-- Lesson CSS -->
+    <link href="{{ url_for('static', filename='css/lesson.css' ) }}" rel="stylesheet" />
+</head>
+
+<body class="d-flex flex-column vh-100 overflow-hidden lesson-page">
+    <!-- Header -->
+    <header class="border-bottom bg-white sticky-top">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center py-3">
+                <!-- Brand -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-2 fw-bold fs-5 brand-text">
+                        <span class="material-icons fs-3 text-primary">school</span>
+                        <span>LJCourses</span>
+                    </div>
+                </div>
+
+                <!-- Breadcrumb -->
+                <div class="col d-none d-md-block">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 small">
+                            <li class="breadcrumb-item"><a href="{{ url_for('my_courses') }}">My Courses</a></li>
+                            <li class="breadcrumb-item"><a href="#" class="text-truncate"
+                                    style="max-width: 150px;">Introduction to UX Design</a></li>
+                            <li class="breadcrumb-item active text-truncate" style="max-width: 200px;"
+                                aria-current="page">01. Introduction to UX</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- User Profile -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn btn-link text-secondary p-2" onclick="toggleDarkMode()"
+                            aria-label="Toggle Theme">
+                            <span class="material-icons icon-dark-mode">wb_sunny</span>
+                            <span class="material-icons icon-light-mode">nightlight</span>
+                        </button>
+                        <div class="vr" style="height: 2.5rem;"></div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-end d-none d-sm-block">
+                                <p class="mb-0 fw-semibold small">Sarah J.</p>
+                                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Student</p>
+                            </div>
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyZq60tXbfNM_PsBcpJfWUm-WS8JIBOJVX4QNEc8Um2c_ADP6mbl0LlZhuXz-3305OcnGZ4umdXa8IQiwhkW5pE_eQccJXaz-fP0LKvmuKoGD4FGulaj3_0FKJYIup1cBpPD1r49-ArjSyDB73V9kg3yDUFybHbXZW__oZLXAllgZeW8s8G6j-33wCtzcUo4wFYZiX3d3OAvErGjmeoa8RA54D9xm1YNtaU62NnGBnGvdq1UUJYkfVLYOivIW-OQio7sgC51bC7daZ"
+                                class="rounded-circle border border-2 border-white shadow-sm profile-image"
+                                style="width: 2.5rem; height: 2.5rem;" alt="Profile">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="d-flex flex-fill overflow-hidden">
+        <!-- Main Content Area -->
+        <main class="flex-fill overflow-auto bg-light">
+            <div class="container-fluid p-4 p-md-5" style="max-width: 80rem;">
+                <!-- Video Player -->
+                <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-lg mb-4">
+                    <video controls class="w-100 h-100" style="background-color: #000;">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <!-- Lesson Header -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h1 class="h3 fw-bold mb-1">01. Introduction to UX Design</h1>
+                        <p class="text-secondary small mb-0">Last updated Oct 2023</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2">
+                            <span class="material-icons" style="font-size: 1.25rem;">check_circle_outline</span>
+                            <span>Mark Complete</span>
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center gap-2 px-3 py-2">
+                            <span>Next Lesson</span>
+                            <span class="material-icons" style="font-size: 1.25rem;">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Card -->
+                <div class="card border-0 shadow-sm">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs border-bottom px-3" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab"
+                                data-bs-target="#overview">Overview</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#resources">Resources</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#qa">Q&A</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notes">Notes</button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content p-4">
+                        <div class="tab-pane fade show active" id="overview">
+                            <h5 class="fw-bold mb-3">About this lesson</h5>
+                            <p class="text-secondary mb-3">
+                                In this introductory lesson, we will explore the fundamental concepts of User Experience
+                                (UX) Design.
+                                You will learn what UX actually means, distinguishing it from UI (User Interface)
+                                design, and understand
+                                why it plays a crucial role in product development today.
+                            </p>
+                            <p class="text-secondary mb-4">
+                                We'll cover the core pillars of UX: Usefulness, Usability, Desirability, and
+                                Accessibility.
+                                By the end of this video, you will have a clear mental model of the UX landscape and be
+                                ready to
+                                dive into the design thinking process.
+                            </p>
+                        </div>
+                        <div class="tab-pane fade" id="resources">
+                            <p class="text-secondary">Resource files and links will appear here.</p>
+                        </div>
+                        <div class="tab-pane fade" id="qa">
+                            <p class="text-secondary">Questions and answers will appear here.</p>
+                        </div>
+                        <div class="tab-pane fade" id="notes">
+                            <p class="text-secondary">Your lesson notes will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Course Sidebar -->
+        <aside class="sidebar-right d-none d-lg-flex flex-column border-start bg-white" style="width: 24rem;">
+            <div class="p-4 border-bottom bg-light">
+                <h6 class="fw-bold mb-2">Course Content</h6>
+                <div class="d-flex justify-content-between align-items-center small text-secondary mb-2">
+                    <span>12% Completed</span>
+                    <span>2/18 Lessons</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar" role="progressbar" style="width: 12%"></div>
+                </div>
+            </div>
+
+            <div class="flex-fill overflow-auto">
+                <!-- Module 1 -->
+                <div class="module-header p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-semibold small">Module 1: Foundations</h6>
+                    <span class="material-icons text-secondary small">expand_less</span>
+                </div>
+                <div class="module-section">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item lesson-item completed">
+                            <div class="d-flex gap-2">
+                                <span class="material-icons text-success">check_circle</span>
+                                <div class="flex-fill">
+                                    <p class="mb-1 small text-decoration-line-through text-secondary">Welcome to the
+                                        Course</p>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <span class="badge bg-success bg-opacity-10 text-success">Completed</span>
+                                        <span class="text-secondary" style="font-size: 0.7rem;">2:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lesson-item active border-start border-primary border-3">
+                            <div class="d-flex gap-2">
+                                <span class="material-icons text-primary">play_circle_filled</span>
+                                <div class="flex-fill">
+                                    <p class="mb-1 small fw-bold text-primary">01. Introduction to UX Design</p>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <span class="badge y bg-opacity-10 text-primary">Playing</span>
+                                        <span class="text-secondary" style="font-size: 0.7rem;">12:45</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item lesson-item">
+                            <div class="d-flex gap-2 opacity-75">
+                                <span class="material-icons text-secondary">play_circle_filled</span>
+                                <div class="flex-fill">
+                                    <p class="mb-1 small">02. Design Thinking Process</p>
+                                    <span class="text-secondary" style="font-size: 0.7rem;">15:20</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- Common JS -->
+    <script src="{{ url_for('static', filename='js/common.js' ) }}"></script>
+</body>
+
+</html>

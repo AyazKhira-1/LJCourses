@@ -1,0 +1,216 @@
+/* ============================================
+   PROFILE PAGE STYLES
+   ============================================ */
+
+/* Sidebar */
+.sidebar-profile {
+    width: 16rem;
+    background-color: #ffffff;
+    transition: background-color 0.2s;
+}
+
+[data-bs-theme="dark"] .sidebar-profile {
+    background-color: #1f2937;
+    border-color: #374151 !important;
+}
+
+/* Navigation Items */
+.nav-item-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-bottom: 0.25rem;
+}
+
+.nav-item-profile:hover {
+    background-color: #f9fafb;
+    color: #111827;
+}
+
+.nav-item-profile.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+[data-bs-theme="dark"] .nav-item-profile {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .nav-item-profile:hover {
+    background-color: #374151;
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .nav-item-profile.active {
+    background-color: rgba(37, 99, 235, 0.2);
+    color: #60a5fa;
+}
+
+/* Header */
+.header-profile {
+    height: 4rem;
+    background-color: #ffffff;
+    border-color: #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+[data-bs-theme="dark"] .header-profile {
+    background-color: #1f2937;
+    border-color: #374151 !important;
+}
+
+/* Cards */
+.profile-card {
+    border-radius: 1rem;
+    background-color: #ffffff;
+    border-color: #e5e7eb !important;
+}
+
+[data-bs-theme="dark"] .profile-card {
+    background-color: #1f2937;
+    border-color: #374151 !important;
+}
+
+/* Form Controls */
+.form-control-profile {
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    border-color: #d1d5db;
+    transition: all 0.2s;
+}
+
+.form-control-profile:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+[data-bs-theme="dark"] .form-control-profile {
+    background-color: #1f2937;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .form-control-profile:focus {
+    background-color: #1f2937;
+    border-color: #2563eb;
+}
+
+/* Badges */
+.badge-profile {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+}
+
+.badge-blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.badge-green {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+[data-bs-theme="dark"] .badge-blue {
+    background-color: rgba(37, 99, 235, 0.3);
+    color: #60a5fa;
+}
+
+[data-bs-theme="dark"] .badge-green {
+    background-color: rgba(5, 150, 105, 0.3);
+    color: #34d399;
+}
+
+/* Stat Icons */
+.stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon-blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.stat-icon-green {
+    background-color: #ecfdf5;
+    color: #059669;
+}
+
+.stat-icon-yellow {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+[data-bs-theme="dark"] .stat-icon-blue {
+    background-color: rgba(37, 99, 235, 0.2);
+    color: #2563eb;
+}
+
+[data-bs-theme="dark"] .stat-icon-green {
+    background-color: rgba(5, 150, 105, 0.2);
+    color: #059669;
+}
+
+[data-bs-theme="dark"] .stat-icon-yellow {
+    background-color: rgba(202, 138, 4, 0.2);
+    color: #ca8a04;
+}
+
+/* Gradient Card */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* Progress Bar */
+.progress {
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .progress {
+    background-color: #374151;
+}
+
+/* Account Settings BG */
+[data-bs-theme="dark"] .bg-light {
+    background-color: rgba(31, 41, 55, 0.5) !important;
+}
+
+/* Typography */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+}

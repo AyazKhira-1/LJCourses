@@ -1,0 +1,216 @@
+/* ============================================
+   DASHBOARD SIDEBAR STYLES
+   ============================================ */
+
+/* Background Image Utilities */
+.bg-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Dashboard page font */
+body.my-courses-page {
+    font-family: 'Lexend', sans-serif !important;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 16rem;
+    flex-shrink: 0;
+    z-index: 20;
+}
+
+[data-bs-theme="dark"] .sidebar {
+    background-color: #15202b !important;
+    border-color: #1e293b !important;
+}
+
+.brand-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.brand-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+/* Navigation Links */
+.nav-link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+[data-bs-theme="dark"] .nav-link-item {
+    color: #94a3b8;
+}
+
+.nav-link-item:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color);
+}
+
+[data-bs-theme="dark"] .nav-link-item:hover {
+    background-color: #1e293b;
+    color: var(--primary-color);
+}
+
+.nav-link-item.active {
+    background-color: rgba(26, 115, 232, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-link-item .material-icons {
+    font-size: 1.25rem;
+    transition: color 0.2s;
+}
+
+.nav-link-item:hover .material-icons {
+    color: var(--primary-color);
+}
+
+.nav-link-danger:hover .material-icons {
+    color: #b91c1c;
+}
+
+.nav-link-danger:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+[data-bs-theme="dark"] .nav-link-danger:hover {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #f87171;
+}
+
+[data-bs-theme="dark"] .nav-link-danger:hover .material-icons {
+    color: #f87171;
+}
+
+/* Main Content Area */
+[data-bs-theme="dark"] main.bg-light {
+    background-color: #0f172a !important;
+}
+
+/* Header Dark Theme */
+[data-bs-theme="dark"] header.bg-white {
+    background-color: rgba(21, 32, 43, 0.9) !important;
+    border-color: #1e293b !important;
+}
+
+/* Search Bar Dark Theme */
+[data-bs-theme="dark"] .form-control {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #f9fafb;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #0f172a;
+    border-color: var(--primary-color);
+    color: #f9fafb;
+}
+
+.profile-image:hover {
+    border-color: var(--primary-color) !important;
+}
+
+/* Course Cards Dark Theme */
+[data-bs-theme="dark"] .card {
+    background-color: #15202b !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .badge.bg-white {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+}
+
+/* Offcanvas Mobile Sidebar */
+.offcanvas {
+    width: 16rem !important;
+}
+
+[data-bs-theme="dark"] .offcanvas {
+    background-color: #15202b !important;
+}
+
+[data-bs-theme="dark"] .offcanvas-header {
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .btn-close {
+    filter: invert(1);
+}
+
+/* Course card hover effect */
+.course-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 0.75rem !important;
+    overflow: hidden;
+}
+
+.course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.course-card .position-relative {
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.course-card .bg-image {
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* Add course card */
+.add-course-card {
+    border-color: #cbd5e1 !important;
+    background-color: #f8fafc;
+    transition: all 0.3s;
+}
+
+.add-course-card:hover {
+    border: dashed var(--primary-color) !important;
+    background-color: rgba(26, 115, 232, 0.05) !important;
+}
+
+.add-course-card .rounded-circle {
+    transition: all 0.3s;
+}
+
+.add-course-card:hover .rounded-circle {
+    transform: scale(1.1);
+}
+
+.add-course-card:hover .text-secondary {
+    color: var(--primary-color) !important;
+}
+
+[data-bs-theme="dark"] .add-course-card {
+    background-color: rgba(21, 32, 43, 0.5) !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .add-course-card:hover {
+    background-color: rgba(26, 115, 232, 0.1) !important;
+    border: dashed var(--primary-color) !important;
+}
+
+[data-bs-theme="dark"] .add-course-card .bg-white {
+    background-color: #15202b !important;
+}
+
+[data-bs-theme="dark"] .add-course-card:hover .text-secondary {
+    color: var(--primary-color) !important;
+}

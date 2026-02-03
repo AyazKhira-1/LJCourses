@@ -1,0 +1,174 @@
+{% extends "student.html" %}
+
+{% block title %}My Profile - LJCourses{% endblock %}
+
+<!-- Profile CSS -->
+{% block styles %}
+<link href="{{ url_for('static', filename='css/profile.css' ) }}" rel="stylesheet" />{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="max-width: 70rem;">
+    <!-- Profile Header Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+                <div class="position-relative">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo"
+                        class="rounded-circle" style="width: 7.5rem; height: 7.5rem; object-fit: cover;" alt="Profile">
+                    <button class="btn btn-primary rounded-circle position-absolute d-flex align-items-center"
+                        style="bottom: 0; right: 0;padding: 0.4rem;">
+                        <span class="material-icons" style="font-size: 1.1rem;">photo_camera</span>
+                    </button>
+                </div>
+                <div class="flex-grow-1 text-center text-md-start">
+                    <h2 class="h3 fw-bold mb-2">Sarah J.</h2>
+                    <p class="text-secondary mb-3 d-flex align-items-center justify-content-md-start gap-2">
+                        <span class="material-icons" style="font-size: 1.125rem;">email</span>
+                        <span>2021004567@mail.ljku.edu.in</span>
+                    </p>
+                    <div class="d-flex flex-wrap justify-content-md-start gap-2">
+                        <span class="badge rounded-pill px-3 py-2"
+                            style="background-color: #dbeafe; color: #2563eb; font-size: 0.75rem; font-weight: 600;">UNDERGRADUATE</span>
+                        <span class="badge rounded-pill px-3 py-2"
+                            style="background-color: #d1fae5; color: #059669; font-size: 0.75rem; font-weight: 600;">ACTIVE</span>
+                    </div>
+                </div>
+                <div class="ms-auto d-flex align-items-center">
+                    <button class="btn btn-primary px-4 py-2 fw-semibold">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-7">
+            <!-- Personal Information -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <span class="material-icons text-primary">person</span>
+                        Personal Information
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-medium small">Full Name</label>
+                        <input type="text" class="form-control" value="Sarah J.">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-secondary fw-medium small">Major</label>
+                        <input type="text" class="form-control" value="Computer Science & Engineering">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-secondary fw-medium small">Bio</label>
+                        <textarea class="form-control"
+                            rows="4">Third-year CSE student at LJKU. Passionate about Full-Stack Development and UI/UX design. Enthusiastic learner and active participant in college hackathons.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <span class="material-icons text-primary">security</span>
+                        Account Settings
+                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="fw-bold mb-1">Password</p>
+                            <p class="text-secondary small mb-0">Last changed 3 months ago</p>
+                        </div>
+                        <button class="btn btn-outline-secondary px-3">Change Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-5">
+            <!-- Academic Progress -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <span class="material-icons text-primary">trending_up</span>
+                        Academic Progress
+                    </h5>
+
+                    <!-- Stats List (Vertical) -->
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        <!-- Enrolled -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 3rem; height: 3rem; background-color: #dbeafe;">
+                                <span class="material-icons text-primary">library_books</span>
+                            </div>
+                            <div>
+                                <p class="text-secondary text-uppercase mb-0"
+                                    style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
+                                    ENROLLED</p>
+                                <p class="h5 fw-bold mb-0">12</p>
+                            </div>
+                        </div>
+
+                        <!-- Completed -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 3rem; height: 3rem; background-color: #d1fae5;">
+                                <span class="material-icons" style="color: #059669;">verified</span>
+                            </div>
+                            <div>
+                                <p class="text-secondary text-uppercase mb-0"
+                                    style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
+                                    COMPLETED</p>
+                                <p class="h5 fw-bold mb-0">8</p>
+                            </div>
+                        </div>
+
+                        <!-- Avg. Grade -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 3rem; height: 3rem; background-color: #fef3c7;">
+                                <span class="material-icons" style="color: #f59e0b;">star</span>
+                            </div>
+                            <div>
+                                <p class="text-secondary text-uppercase mb-0"
+                                    style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
+                                    AVG. GRADE</p>
+                                <p class="h5 fw-bold mb-0">A (8.9 CGPA)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Degree Completion -->
+                    <div class="pt-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="text-secondary text-uppercase mb-0"
+                                style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;">DEGREE
+                                COMPLETION</p>
+                            <p class="text-secondary mb-0" style="font-size: 0.875rem; font-weight: 600;">
+                                66%</p>
+                        </div>
+                        <div class="progress mb-2" style="height: 0.5rem;">
+                            <div class="progress-bar" role="progressbar" style="width: 66%; background-color: #2563eb;"
+                                aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="text-center text-secondary small mb-0">Estimated Graduation: May 2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Help Card -->
+            <div class="card border-0 shadow-lg"
+                style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 1.25rem;">
+                <div class="card-body p-4 text-white">
+                    <h5 class="fw-bold mb-2">Need Academic Help?</h5>
+                    <p class="mb-3 opacity-90" style="font-size: 0.875rem;">Book a session with your
+                        academic counselor today.</p>
+                    <button class="btn btn-light w-100 fw-bold text-primary py-2">Schedule Meeting</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

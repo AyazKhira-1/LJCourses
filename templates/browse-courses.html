@@ -1,0 +1,144 @@
+{% extends "student.html" %}
+
+{% block title %}Browse Courses - LJCourses{% endblock %}
+
+{% set active_page = 'browse_courses' %}
+
+{% block content %}
+<div class="container-fluid" style="max-width: 90rem;">
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="display-6 fw-bold mb-2">Explore New Courses</h2>
+        <p class="text-secondary mb-0">Expand your knowledge and advance your career with our latest
+            classes.</p>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="btn btn-dark btn-sm rounded-pill px-4">All</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4">Development</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4">Design</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4">Marketing</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4">Business</button>
+    </div>
+
+    <!-- Course Grid -->
+    <div class="row g-4">
+        <!-- Course Card 1 -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0 shadow-sm course-card">
+                <div class="position-relative overflow-hidden" style="height: 12rem;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCuGlOlzueSusvOq36Aj5zyle2UQNw2twth3Bn450cLuYGpPIbrVQ2YaP1TGKY17yZO415RV4m10lNFPTiJM5pwKKGhJHaFe93drzj19j5E5vXJxEpX3LGyC_ToB_VHhTOunMCSBkazy2QiORuri0vNQvsqD8aigZd7BM-ogm7ApKJwdlCr_muljiFnMfxVGTgv5OR-91Eetosub6--k7lm6oHisOJ7rImY7f2SVDiMavAYf5dFET2oWPXja6YKLdEHXd6Ic0f4h2q"
+                        class="w-100 h-100 object-fit-cover" alt="Coding on laptop">
+                    <span
+                        class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small">Development</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded small fw-semibold"
+                            style="background-color: #fef3c7; color: #f59e0b;">
+                            <span class="material-icons" style="font-size: 1rem;">star</span>
+                            <span>4.9</span>
+                        </span>
+                        <span class="text-secondary small">12h 30m</span>
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">Full Stack Web Development Bootcamp</h5>
+                    <p class="card-text text-secondary small mb-3">Master HTML, CSS, JS, Node, and React in
+                        this comprehensive bootcamp.</p>
+                    <div class="mt-auto pt-3 border-top">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlkpJJ7d0FdGr9XIpfzJfWhIPr_4QHihksGmabJ_m86JU8NGf9Ow42-cPSeGhqmNWjZiFlLGeindj29H6a_YgKsEB85BCNR3-tAl2Wodp8Vl2vKbGIZpnDTxDMfosV1roqK_jLzq7UffuyJFPf6-iB2ynIJy2r3cyJZXF_W4onIYkgSmtGY1cqHtd3S9n1UYlLhrCtXbh94bRWuuo2SbFd0tAomDHm5X6e37ZWm89g7mGtpMsfgqytcyWA0I9FlNd5zt51KALIHi5g"
+                                    class="rounded-circle me-2" style="width: 1.5rem; height: 1.5rem;" alt="Instructor">
+                                <span class="small fw-medium">Mark Smith</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="window.location.href='/course'">Enroll
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 2 -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0 shadow-sm course-card">
+                <div class="position-relative overflow-hidden" style="height: 12rem;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtShuzkMHvxlxOcVou2gYbrUa3uNUQ-Gn20rkSjmLAgeYntiMkAjcSUC20zYGkzZBidNpiSHIYlKWg2t1hWTF0QxAtuvXL5lKohZ1ieoSYKHTP_66teszqaJmS9eMVzgRgpqpaFigXQlR-Pl12xA3SE_JIDrBqxXky8jGH-2drZ2yVcv0xIyR5LUupl0Quk6xEqiynA5jv0n_yJvRINcLs6Z4i9-fCOTXCBIXoTlp4i28UUnoh5qdCQ_CqOEgQtlfckOEy9oKYuPXb"
+                        class="w-100 h-100 object-fit-cover" alt="UX Design wireframes">
+                    <span
+                        class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small">Design</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded small fw-semibold"
+                            style="background-color: #fef3c7; color: #f59e0b;">
+                            <span class="material-icons" style="font-size: 1rem;">star</span>
+                            <span>4.8</span>
+                        </span>
+                        <span class="text-secondary small">8h 15m</span>
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">UI/UX Design Principles & Practices</h5>
+                    <p class="card-text text-secondary small mb-3">Learn to create user-friendly interfaces
+                        and beautiful experiences.</p>
+                    <div class="mt-auto pt-3 border-top">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvIrD0p-ycWWNRZOtFFZGJetTvYYstm8aXLjPezKxndjMtIXvb_1MQYpx8ZQFN8LuCr4NHqU0BvVfggnQiLgbh-yH6gCxUjgaIBZlHCvGdaRHotuO14WocdL8uiq-uHpxMsZQYnbjpdWOpi4yrLOKh6gbZzv2MFpwsKjs5At_KVqdKkFBTi1X97OkKN0cCNpoIHuamDHFldBrIvGVJU2cOXa-uLejDTU1kYz_GAeqOAuozFFsw7FkNjECsM3Va3Wdg0dqGTD6PSw-8"
+                                    class="rounded-circle me-2" style="width: 1.5rem; height: 1.5rem;" alt="Instructor">
+                                <span class="small fw-medium">Jane Doe</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="window.location.href='/course'">Enroll
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Card 3 -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0 shadow-sm course-card">
+                <div class="position-relative overflow-hidden" style="height: 12rem;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJR4sARXWBIh1MFyVdpgx-q003N2aoBAPc32b5WB-Jj-LgBVx6OCXMJ0X2NcCDkRQLyBmp5AZH8amwZEPTCkqA0DWy2RqzMkxhU3sIbmAhp7Wp92psoJqlH_VjAhc0nAkEeHIyhJZFcviLDJPIxNJ1ZdOozd4qFfXsoukF9OV4NqfTaUBYcVYyaYKiTf0XJhL-50tLT9HPZRAhW3XNwhSMqGU_mtLqZXdRitjpOuDdlVTtzB9saEEBzDDZQea2rnkOa-EZi_R6j38j"
+                        class="w-100 h-100 object-fit-cover" alt="Data analytics charts">
+                    <span
+                        class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small">Marketing</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded small fw-semibold"
+                            style="background-color: #fef3c7; color: #f59e0b;">
+                            <span class="material-icons" style="font-size: 1rem;">star</span>
+                            <span>4.7</span>
+                        </span>
+                        <span class="text-secondary small">10h 45m</span>
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">Digital Marketing Mastery</h5>
+                    <p class="card-text text-secondary small mb-3">Learn SEO, social media, email marketing,
+                        and analytics strategies.</p>
+                    <div class="mt-auto pt-3 border-top">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDot6MLYqfV3TM91Mv8odBHOsmu-cgUSlpgGzxbsefum48jp8sTvNqHAH8s8vivpFcDXXf8lO40o0Hx7AdMM50hHnn5P7F4MEeNXJ0aF3cxC2xHyYwXPybebHA6BoRVHsk-aDif2NeY3USc19fwOtYM1BfJK1PdAOOmVbtPT0P1cBO3Sh4YT8VOwgFmLZdBLULR0aEFPDRwLOkPHlrIzhnOoW3d0eDCNVPYuJzjq7UKE5VKdDL_FirxmRZzFKkRwbTmbr3mUcdr_MmO"
+                                    class="rounded-circle me-2" style="width: 1.5rem; height: 1.5rem;" alt="Instructor">
+                                <span class="small fw-medium">Sarah Lee</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="window.location.href='/course'">Enroll
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load More Button -->
+    <div class="mt-5 text-center pb-4">
+        <button class="btn btn-outline-secondary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2">
+            Load More Courses
+            <span class="material-icons" style="font-size: 1.25rem;">expand_more</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
