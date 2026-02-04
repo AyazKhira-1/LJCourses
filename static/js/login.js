@@ -1,5 +1,5 @@
 // ============================================
-// SIGN-UP PAGE SPECIFIC JAVASCRIPT
+// LOGIN PAGE SPECIFIC JAVASCRIPT
 // ============================================
 
 /**
@@ -45,51 +45,14 @@ function validateEmail(email) {
 }
 
 /**
- * Validate password
+ * Handle login form submission
  */
-function validatePassword(password) {
-    if (password.length < 8) {
-        return {
-            valid: false,
-            message: 'Password must be at least 8 characters long'
-        };
-    }
-
-    return { valid: true };
-}
-
-/**
- * Validate passwords match
- */
-function validatePasswordsMatch(password, confirmPassword) {
-    if (password !== confirmPassword) {
-        return {
-            valid: false,
-            message: 'Passwords do not match'
-        };
-    }
-
-    return { valid: true };
-}
-
-/**
- * Handle form submission
- */
-async function handleSignUpSubmit(event) {
+async function handleLoginSubmit(event) {
     event.preventDefault();
 
     // Get form values
-    const fullName = document.getElementById('fullname').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-    const termsCheckbox = document.getElementById('terms');
-
-    // Validate full name
-    if (!fullName) {
-        showNotification('Please enter your full name', 'danger');
-        return;
-    }
 
     // Validate email
     const emailValidation = validateEmail(email);
@@ -98,48 +61,32 @@ async function handleSignUpSubmit(event) {
         return;
     }
 
-    // Validate password
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-        showNotification(passwordValidation.message, 'danger');
-        return;
-    }
-
-    // Validate passwords match
-    const passwordsMatchValidation = validatePasswordsMatch(password, confirmPassword);
-    if (!passwordsMatchValidation.valid) {
-        showNotification(passwordsMatchValidation.message, 'danger');
-        return;
-    }
-
-    // Validate terms and conditions
-    if (!termsCheckbox.checked) {
-        showNotification('Please accept the Terms of Service and Privacy Policy', 'danger');
+    // Validate password is not empty
+    if (!password) {
+        showNotification('Please enter your password', 'danger');
         return;
     }
 
     // Prepare data for API
-    const signupData = {
-        full_name: fullName,
+    const loginData = {
         email: email,
-        password: password,
-        confirm_password: confirmPassword
+        password: password
     };
 
     // Show loading state
     const submitButton = event.target.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = 'Creating Account...';
+    submitButton.textContent = 'Logging In...';
 
     try {
         // Send POST request to FastAPI
-        const response = await fetch('http://127.0.0.1:8000/api/auth/signup', {
+        const response = await fetch('http://127.0.0.1:8000/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(signupData)
+            body: JSON.stringify(loginData)
         });
 
         const data = await response.json();
@@ -150,7 +97,7 @@ async function handleSignUpSubmit(event) {
             localStorage.setItem('user_email', data.user.email);
             localStorage.setItem('user_name', data.user.full_name);
 
-            showNotification('Account created successfully! Redirecting...', 'success');
+            showNotification('Login successful! Redirecting...', 'success');
 
             // Redirect after 1.5 seconds
             setTimeout(() => {
@@ -158,7 +105,7 @@ async function handleSignUpSubmit(event) {
             }, 1500);
         } else {
             // Handle error response
-            const errorMessage = data.detail || 'Sign up failed. Please try again.';
+            const errorMessage = data.detail || 'Login failed. Please check your credentials.';
             showNotification(errorMessage, 'danger');
 
             // Re-enable button
@@ -166,7 +113,7 @@ async function handleSignUpSubmit(event) {
             submitButton.textContent = originalButtonText;
         }
     } catch (error) {
-        console.error('Sign up error:', error);
+        console.error('Login error:', error);
         showNotification('Network error. Please check your connection and try again.', 'danger');
 
         // Re-enable button
@@ -176,13 +123,13 @@ async function handleSignUpSubmit(event) {
 }
 
 /**
- * Initialize sign-up page functionality
+ * Initialize login page functionality
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Google Sign Up Button Handler
-    const googleSignUpBtn = document.querySelector('.google-icon');
-    if (googleSignUpBtn && googleSignUpBtn.closest('button')) {
-        googleSignUpBtn.closest('button').addEventListener('click', function (e) {
+    // Google Login Button Handler
+    const googleLoginBtn = document.querySelector('.google-icon');
+    if (googleLoginBtn && googleLoginBtn.closest('button')) {
+        googleLoginBtn.closest('button').addEventListener('click', function (e) {
             e.preventDefault();
 
             showNotification(
@@ -215,9 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle form submission
-    const signUpForm = document.querySelector('form');
-    if (signUpForm) {
-        signUpForm.addEventListener('submit', handleSignUpSubmit);
+    const loginForm = document.querySelector('form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
     }
 
     // Real-time email validation feedback

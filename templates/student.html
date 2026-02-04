@@ -57,7 +57,7 @@
 
             <!-- Bottom Action -->
             <div class="border-top pt-3">
-                <a class="nav-link-item nav-link-danger" href="{{ url_for('home') }}">
+                <a class="nav-link-item nav-link-danger" href="#" data-action="logout">
                     <span class="material-icons">logout</span>
                     <span>Log Out</span>
                 </a>
@@ -96,7 +96,7 @@
             </nav>
 
             <div class="border-top pt-3 mt-auto">
-                <a class="nav-link-item nav-link-danger" href="{{ url_for('home') }}" data-bs-dismiss="offcanvas">
+                <a class="nav-link-item nav-link-danger" href="#" data-action="logout" data-bs-dismiss="offcanvas">
                     <span class="material-icons">logout</span>
                     <span>Log Out</span>
                 </a>
@@ -152,12 +152,14 @@
                             <a href="{{ url_for('profile') }}"
                                 class="d-flex align-items-center gap-3 text-decoration-none">
                                 <div class="text-end d-none d-sm-block">
-                                    <p class="mb-0 fw-bold small text-secondary">Sarah J.</p>
-                                    <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Student</p>
+                                    <p id="header-user-name" class="mb-0 fw-bold small text-secondary">Loading...</p>
+                                    <p id="header-user-role" class="mb-0 text-secondary" style="font-size: 0.75rem;">
+                                        Loading...</p>
                                 </div>
-                                <div class="rounded-circle bg-image border border-2 border-white shadow-sm profile-image"
-                                    style='width: 2.5rem; height: 2.5rem; background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo");'>
-                                </div>
+                                <img id="header-user-photo"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo"
+                                    class="rounded-circle bg-image border border-2 border-white shadow-sm profile-image"
+                                    style='width: 2.5rem; height: 2.5rem;' alt="Profile">
                             </a>
                         </div>
                     </div>
@@ -187,7 +189,10 @@
         crossorigin="anonymous"></script>
 
     <!-- Common JS -->
-    <script src="{{ url_for('static', filename='js/common.js' ) }}"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
 </body>
 
 </html>

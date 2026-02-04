@@ -21,3 +21,6 @@ __pycache__/
 
 # Database (local)
 *.db
+
+# Media folder
+/static/uploads

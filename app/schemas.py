@@ -33,7 +33,11 @@ class UserUpdate(BaseModel):
 class UserResponse(UserBase):
     id: UUID
     email: EmailStr
+    full_name: str
     role: str
+    profile_image: Optional[str] = None
+    bio: Optional[str] = None
+    major: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     last_login: Optional[datetime] = None

@@ -23,6 +23,7 @@ def student_sign_up():
 
 
 @app.route('/my-courses')
+
 def my_courses():
     """My courses page"""
     return render_template('my_courses.html')

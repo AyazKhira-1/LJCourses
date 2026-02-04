@@ -1,14 +1,19 @@
 """
 FastAPI application with student authentication and CRUD endpoints
 """
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 import uvicorn
+import os
+from pathlib import Path
+import shutil
+from datetime import datetime as dt
 
 from app.db import get_db, Base, engine
 from app.models import User, UserRole
@@ -261,6 +266,70 @@ async def delete_student(
         )
 
     return None
+
+
+# ==================== File Upload Endpoints ====================
+
+# Create uploads directory if it doesn't exist
+UPLOAD_DIR = Path("static/uploads/profile_photos")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# Mount static files for serving uploaded photos
+app.mount("/uploads", StaticFiles(directory="static/uploads"), name="uploads")
+
+
+@app.post("/api/upload/profile-photo")
+async def upload_profile_photo(
+        file: UploadFile = File(...),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    """Upload profile photo for current user"""
+    
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file type. Allowed types: jpg, jpeg, png, webp"
+        )
+    
+    # Validate file size (max 5MB)
+    file.file.seek(0, 2)  # Seek to end
+    file_size = file.file.tell()  # Get position (size)
+    file.file.seek(0)  # Reset to beginning
+    
+    if file_size > 5 * 1024 * 1024:  # 5MB
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File too large. Maximum size is 5MB"
+        )
+    
+    # Generate unique filename
+    file_extension = file.filename.split(".")[-1]
+    unique_filename = f"{current_user.id}_{int(dt.now().timestamp())}.{file_extension}"
+    file_path = UPLOAD_DIR / unique_filename
+    
+    # Save file
+    try:
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save file: {str(e)}"
+        )
+    
+    # Update user's profile_image in database
+    photo_url = f"/uploads/profile_photos/{unique_filename}"
+    current_user.profile_image = photo_url
+    db.commit()
+    db.refresh(current_user)
+    
+    return {
+        "message": "Profile photo uploaded successfully",
+        "photo_url": photo_url
+    }
 
 
 # Exception handlers

@@ -64,10 +64,27 @@ def update_user(db: Session, user_id: UUID, **kwargs) -> Optional[User]:
         return None
 
     # Update allowed fields
-    allowed_fields = ['full_name', 'phone', 'bio', 'profile_image', 'enrollment_number', 'is_active', 'email_verified']
+    allowed_fields = ['full_name', 'bio', 'profile_image', 'major', 'enrollment_number', 'is_active', 'email_verified']
 
     for field, value in kwargs.items():
-        if field in allowed_fields and value is not None:
+        if field in allowed_fields:
+            # Special handling for profile_image removal - delete the file
+            if field == 'profile_image' and value is None and user.profile_image:
+                from pathlib import Path
+                # Extract filename from URL path
+                old_photo_path = user.profile_image.replace('/uploads/profile_photos/', '')
+                # Build path to the file
+                upload_dir = Path(__file__).parent.parent / 'static' / 'uploads' / 'profile_photos'
+                old_file_path = upload_dir / old_photo_path
+                
+                # Delete old file if it exists
+                if old_file_path.exists():
+                    try:
+                        old_file_path.unlink()
+                        print(f"Deleted photo file: {old_photo_path}")
+                    except Exception as e:
+                        print(f"Failed to delete photo file: {e}")
+            
             setattr(user, field, value)
 
     user.updated_at = datetime.now()
