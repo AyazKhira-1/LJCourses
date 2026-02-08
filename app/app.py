@@ -23,7 +23,7 @@ from app.schemas import (
 from app.services import (
     create_user, authenticate_user, get_user_by_id, get_user_by_email,
     get_all_students, update_last_login, update_user, delete_user,
-    reset_user_password
+    reset_user_password, deactivate_user
 )
 from app.auth import create_access_token, get_current_user
 
@@ -169,6 +169,26 @@ async def login(credentials: UserLogin, db: Session = Depends(get_db)):
         access_token=access_token,
         user=UserResponse.model_validate(user)
     )
+
+
+@app.post("/api/auth/logout")
+async def logout(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Logout endpoint - sets user's is_active to False"""
+    deactivated_user = deactivate_user(db, current_user.id)
+    
+    if not deactivated_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return {
+        "message": "Logged out successfully",
+        "email": deactivated_user.email
+    }
 
 
 @app.get("/api/auth/me", response_model=UserResponse)
@@ -341,6 +361,21 @@ async def upload_profile_photo(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="File too large. Maximum size is 5MB"
         )
+    
+    # Delete old profile photo if it exists
+    if current_user.profile_image:
+        try:
+            # Extract filename from URL path
+            old_photo_path = current_user.profile_image.replace('/uploads/profile_photos/', '')
+            old_file_path = UPLOAD_DIR / old_photo_path
+            
+            # Delete old file if it exists
+            if old_file_path.exists():
+                old_file_path.unlink()
+                print(f"Deleted old profile photo: {old_photo_path}")
+        except Exception as e:
+            print(f"Failed to delete old profile photo: {e}")
+            # Continue with upload even if deletion fails
     
     # Generate unique filename
     file_extension = file.filename.split(".")[-1]

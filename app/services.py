@@ -64,7 +64,7 @@ def update_user(db: Session, user_id: UUID, **kwargs) -> Optional[User]:
         return None
 
     # Update allowed fields
-    allowed_fields = ['full_name', 'bio', 'profile_image', 'major', 'enrollment_number', 'is_active', 'email_verified']
+    allowed_fields = ['full_name', 'bio', 'profile_image', 'major']
 
     for field, value in kwargs.items():
         if field in allowed_fields:
@@ -104,19 +104,49 @@ def delete_user(db: Session, user_id: UUID) -> bool:
     if not user:
         return False
 
+    # Delete user's profile photo if it exists
+    if user.profile_image:
+        from pathlib import Path
+        try:
+            # Extract filename from URL path
+            old_photo_path = user.profile_image.replace('/uploads/profile_photos/', '')
+            # Build path to the file
+            upload_dir = Path(__file__).parent.parent / 'static' / 'uploads' / 'profile_photos'
+            old_file_path = upload_dir / old_photo_path
+            
+            # Delete file if it exists
+            if old_file_path.exists():
+                old_file_path.unlink()
+                print(f"Deleted profile photo: {old_photo_path}")
+        except Exception as e:
+            print(f"Failed to delete profile photo: {e}")
+
     db.delete(user)
     db.commit()
     return True
 
-
 def update_last_login(db: Session, user_id: UUID) -> Optional[User]:
-    """Update user's last login timestamp"""
+    """Update user's last login timestamp and set is_active to True"""
     user = get_user_by_id(db, user_id)
     if not user:
         return None
 
     utcnow = datetime.now()
     user.last_login = utcnow
+    user.is_active = True  # Reactivate user on login
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def deactivate_user(db: Session, user_id: UUID) -> Optional[User]:
+    """Set user's is_active to False when they logout"""
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return None
+
+    user.is_active = False
+    user.updated_at = datetime.now()
     db.commit()
     db.refresh(user)
     return user
