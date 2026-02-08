@@ -2,7 +2,6 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-
 # Routes
 @app.route('/')
 def home():
@@ -23,7 +22,6 @@ def student_sign_up():
 
 
 @app.route('/my-courses')
-
 def my_courses():
     """My courses page"""
     return render_template('my_courses.html')
@@ -58,6 +56,17 @@ def course_overview():
     """Course overview page"""
     return render_template('course-overview.html')
 
+
+@app.route('/change-password')
+def change_password():
+    """Change password page"""
+    return render_template('change_password.html')
+
+
+@app.route('/forgot-password')
+def forgot_password():
+    """Forgot password page"""
+    return render_template('forgot_password.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001, host='127.0.0.1')

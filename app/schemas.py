@@ -52,3 +52,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: Optional[UUID] = None
     email: Optional[str] = None
+
+
+class PasswordReset(BaseModel):
+    """Schema for password reset/change requests"""
+    email: EmailStr
+    new_password: str = Field(..., min_length=8)
+    confirm_password: str

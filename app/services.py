@@ -132,3 +132,56 @@ def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
         return None
     
     return user
+
+
+def validate_password_strength(password: str) -> tuple[bool, str]:
+    """
+    Validate password meets strength requirements:
+    - At least 8 characters long
+    - Include uppercase and lowercase letters
+    - Include at least one number
+    - Include at least one special character
+    
+    Returns: (is_valid, error_message)
+    """
+    import re
+    
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    
+    if not re.search(r'[A-Z]', password):
+        return False, "Password must include at least one uppercase letter"
+    
+    if not re.search(r'[a-z]', password):
+        return False, "Password must include at least one lowercase letter"
+    
+    if not re.search(r'[0-9]', password):
+        return False, "Password must include at least one number"
+    
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return False, "Password must include at least one special character"
+    
+    return True, ""
+
+
+def reset_user_password(db: Session, email: str, new_password: str) -> Optional[User]:
+    """
+    Reset user password by email
+    Returns updated user or None if user not found
+    """
+    user = get_user_by_email(db, email)
+    if not user:
+        return None
+    
+    # Validate password strength
+    is_valid, error_msg = validate_password_strength(new_password)
+    if not is_valid:
+        raise ValueError(error_msg)
+    
+    # Set new password
+    user.set_password(new_password)
+    user.updated_at = datetime.now()
+    
+    db.commit()
+    db.refresh(user)
+    return user

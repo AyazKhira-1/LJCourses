@@ -18,11 +18,12 @@ from datetime import datetime as dt
 from app.db import get_db, Base, engine
 from app.models import User, UserRole
 from app.schemas import (
-    UserCreate, UserLogin, UserResponse, UserUpdate, Token
+    UserCreate, UserLogin, UserResponse, UserUpdate, Token, PasswordReset
 )
 from app.services import (
     create_user, authenticate_user, get_user_by_id, get_user_by_email,
-    get_all_students, update_last_login, update_user, delete_user
+    get_all_students, update_last_login, update_user, delete_user,
+    reset_user_password
 )
 from app.auth import create_access_token, get_current_user
 
@@ -174,6 +175,42 @@ async def login(credentials: UserLogin, db: Session = Depends(get_db)):
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
     """Get current authenticated user profile"""
     return UserResponse.model_validate(current_user)
+
+
+@app.post("/api/auth/reset-password")
+async def reset_password(data: PasswordReset, db: Session = Depends(get_db)):
+    """
+    Reset/change user password
+    Used by both forgot password and change password flows
+    """
+    
+    # Validate passwords match
+    if data.new_password != data.confirm_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Passwords do not match"
+        )
+    
+    try:
+        # Reset password
+        user = reset_user_password(db, data.email, data.new_password)
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User with this email not found"
+            )
+        
+        return {
+            "message": "Password reset successful",
+            "email": user.email
+        }
+        
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
 
 # ==================== Student CRUD Endpoints ====================

@@ -79,24 +79,24 @@
         <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="d-flex flex-column gap-2">
                 <a class="nav-link-item {% if active_page == 'my_courses' %}active{% endif %}"
-                    href="{{ url_for('my_courses') }}" data-bs-dismiss="offcanvas">
+                    href="{{ url_for('my_courses') }}">
                     <span class="material-icons fill-1">dashboard</span>
                     <span>My Courses</span>
                 </a>
                 <a class="nav-link-item {% if active_page == 'browse_courses' %}active{% endif %}"
-                    href="{{ url_for('browse_courses') }}" data-bs-dismiss="offcanvas">
+                    href="{{ url_for('browse_courses') }}">
                     <span class="material-icons">search</span>
                     <span>Browse Courses</span>
                 </a>
                 <a class="nav-link-item {% if active_page == 'settings' %}active{% endif %}"
-                    href="{{ url_for('settings') }}" data-bs-dismiss="offcanvas">
+                    href="{{ url_for('settings') }}">
                     <span class="material-icons">settings</span>
                     <span>Settings</span>
                 </a>
             </nav>
 
             <div class="border-top pt-3 mt-auto">
-                <a class="nav-link-item nav-link-danger" href="#" data-action="logout" data-bs-dismiss="offcanvas">
+                <a class="nav-link-item nav-link-danger" href="#" data-action="logout">
                     <span class="material-icons">logout</span>
                     <span>Log Out</span>
                 </a>
@@ -113,7 +113,7 @@
                     <!-- Mobile Menu & Logo -->
                     <div class="col-auto d-lg-none">
                         <button class="btn btn-link text-secondary p-0" type="button" data-bs-toggle="offcanvas"
-                            data-bs-target="#mobileSidebar">
+                            data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
                             <span class="material-icons">menu</span>
                         </button>
                     </div>
