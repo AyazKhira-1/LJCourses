@@ -47,6 +47,11 @@
                         <span class="material-icons">search</span>
                         <span>Browse Courses</span>
                     </a>
+                    <a class="nav-link-item {% if active_page == 'completed_courses' %}active{% endif %}"
+                        href="{{ url_for('completed_courses') }}">
+                        <span class="material-icons">check_circle</span>
+                        <span>Completed</span>
+                    </a>
                     <a class="nav-link-item {% if active_page == 'settings' %}active{% endif %}"
                         href="{{ url_for('settings') }}">
                         <span class="material-icons">settings</span>
@@ -87,6 +92,11 @@
                     href="{{ url_for('browse_courses') }}">
                     <span class="material-icons">search</span>
                     <span>Browse Courses</span>
+                </a>
+                <a class="nav-link-item {% if active_page == 'completed_courses' %}active{% endif %}"
+                    href="{{ url_for('completed_courses') }}">
+                    <span class="material-icons">check_circle</span>
+                    <span>Completed</span>
                 </a>
                 <a class="nav-link-item {% if active_page == 'settings' %}active{% endif %}"
                     href="{{ url_for('settings') }}">

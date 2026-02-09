@@ -1,6 +1,6 @@
 {% extends "student.html" %}
 
-{% block title %}Course Overview - LJCourses{% endblock %}
+{% block title %}{{ course.title if course else 'Course Overview' }} - LJCourses{% endblock %}
 
 {% set active_page = 'browse_courses' %}
 
@@ -19,6 +19,7 @@
         </a>
     </div>
 
+    {% if course %}
     <!-- Course Hero Card -->
     <div class="card border-0 shadow-sm mb-4 overflow-hidden course-section-card">
         <div class="row g-0 align-items-stretch">
@@ -26,11 +27,11 @@
             <!-- Left Image -->
             <div class="col-md-5 d-flex">
                 <div class="position-relative w-100">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCuGlOlzueSusvOq36Aj5zyle2UQNw2twth3Bn450cLuYGpPIbrVQ2YaP1TGKY17yZO415RV4m10lNFPTiJM5pwKKGhJHaFe93drzj19j5E5vXJxEpX3LGyC_ToB_VHhTOunMCSBkazy2QiORuri0vNQvsqD8aigZd7BM-ogm7ApKJwdlCr_muljiFnMfxVGTgv5OR-91Eetosub6--k7lm6oHisOJ7rImY7f2SVDiMavAYf5dFET2oWPXja6YKLdEHXd6Ic0f4h2q"
-                        class="w-100 h-100 object-fit-cover" alt="Course">
+                    <img src="{{ course.thumbnail or 'https://via.placeholder.com/500x300?text=Course' }}"
+                        class="w-100 h-100 object-fit-cover" alt="{{ course.title }}">
                     <span
                         class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small shadow-sm">
-                        Development
+                        {{ course.category.name }}
                     </span>
                 </div>
             </div>
@@ -44,50 +45,71 @@
                         <div class="d-flex align-items-center gap-1 px-2 py-1 rounded fw-semibold"
                             style="background-color:#fef3c7;color:#f59e0b;">
                             <span class="material-icons" style="font-size:1.25rem;">star</span>
-                            <span>4.9</span>
+                            <span>{{ course.rating or '0.0' }}</span>
                         </div>
 
                         <div class="d-flex align-items-center gap-1 text-secondary">
                             <span class="material-icons" style="font-size:1.25rem;">schedule</span>
-                            <span class="small">12h 30m Total</span>
+                            <span class="small">{{ format_duration(course.duration_hours) }} Total</span>
                         </div>
 
                         <div class="d-flex align-items-center gap-1 text-secondary">
                             <span class="material-icons" style="font-size:1.25rem;">signal_cellular_alt</span>
-                            <span class="small">Beginner to Pro</span>
+                            <span class="small">{{ course.difficulty_level or 'All Levels' }}</span>
                         </div>
                     </div>
 
                     <!-- Title -->
                     <h1 class="h2 fw-bold mb-3 lh-sm">
-                        Full Stack Web Development Bootcamp
+                        {{ course.title }}
                     </h1>
 
                     <!-- Description -->
                     <p class="text-secondary mb-auto pb-4" style="line-height:1.6;">
-                        Master HTML, CSS, JS, Node, and React. Become a professional web
-                        developer with this comprehensive, hands-on bootcamp designed for
-                        modern careers.
+                        {{ course.description or course.small_description or 'No description available.' }}
                     </p>
 
                     <!-- Instructor & Actions -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3 mt-3">
 
                         <div class="d-flex align-items-center gap-3">
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlkpJJ7d0FdGr9XIpfzJfWhIPr_4QHihksGmabJ_m86JU8NGf9Ow42-cPSeGhqmNWjZiFlLGeindj29H6a_YgKsEB85BCNR3-tAl2Wodp8Vl2vKbGIZpnDTxDMfosV1roqK_jLzq7UffuyJFPf6-iB2ynIJy2r3cyJZXF_W4onIYkgSmtGY1cqHtd3S9n1UYlLhrCtXbh94bRWuuo2SbFd0tAomDHm5X6e37ZWm89g7mGtpMsfgqytcyWA0I9FlNd5zt51KALIHi5g"
-                                class="rounded-circle" style="width:3rem;height:3rem;" alt="Instructor">
+                            <img src="{{ course.instructor.image or 'https://via.placeholder.com/48' }}"
+                                class="rounded-circle" style="width:3rem;height:3rem;"
+                                alt="{{ course.instructor.name }}">
                             <div>
-                                <p class="mb-0 fw-bold">Mark Smith</p>
+                                <p class="mb-0 fw-bold">{{ course.instructor.name }}</p>
                                 <p class="mb-0 text-secondary small">
-                                    Senior Software Engineer
+                                    {{ course.instructor.designation or 'Instructor' }}
                                 </p>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 align-items-center">
-                            <button class="btn btn-primary px-4 py-2 fw-semibold">
+                            {% if enrollment %}
+                            {% if enrollment.completed_at %}
+                            <button class="btn btn-primary px-4 py-2 fw-semibold" style="cursor: default;">
+                                <span class="material-icons align-middle me-1"
+                                    style="font-size: 1.25rem;">check_circle</span>
+                                Completed
+                            </button>
+                            <a href="{{ url_for('lesson') }}?course={{ course.slug }}"
+                                class="btn btn-outline-primary px-4 py-2 fw-semibold">
+                                Review
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('lesson') }}?course={{ course.slug }}"
+                                class="btn btn-success px-4 py-2 fw-semibold">
+                                <span class="material-icons align-middle me-1"
+                                    style="font-size: 1.25rem;">play_arrow</span>
+                                Continue Learning
+                            </a>
+                            {% endif %}
+                            {% else %}
+                            <button class="btn btn-primary px-4 py-2 fw-semibold" id="enrollBtn"
+                                data-course-id="{{ course.id }}">
                                 Enroll Now
                             </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -100,6 +122,7 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <!-- Course Purpose -->
+            {% if course.course_purpose %}
             <div class="card border-0 shadow-sm mb-4 course-section-card">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3 d-flex align-items-center">
@@ -108,15 +131,13 @@
                         </span>
                         Course Purpose
                     </h5>
-                    <p class="text-secondary mb-0">This course is meticulously designed to bridge the gap
-                        between theoretical computer science concepts and practical, job-ready skills.
-                        Whether you are looking to switch careers into tech or upgrade your current skill
-                        set, this bootcamp provides a structured path to mastering full-stack web
-                        development.</p>
+                    <p class="text-secondary mb-0">{{ course.course_purpose }}</p>
                 </div>
             </div>
+            {% endif %}
 
             <!-- Learning Objectives -->
+            {% if course.learning_objectives %}
             <div class="card border-0 shadow-sm mb-4 course-section-card">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3 d-flex align-items-center">
@@ -126,47 +147,21 @@
                         Learning Objectives
                     </h5>
                     <div class="row g-3">
+                        {% for objective in course.learning_objectives %}
                         <div class="col-md-6">
                             <div class="d-flex align-items-start">
                                 <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Build responsive websites using HTML5 and CSS3</span>
+                                <span class="small">{{ objective }}</span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Create dynamic single-page apps with React</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Design RESTful APIs using Node.js & Express</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Manage databases with MongoDB and SQL</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Implement user authentication and security</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-start">
-                                <span class="material-icons text-success me-2">check_circle</span>
-                                <span class="small">Deploy applications to the cloud</span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <!-- Topics Covered -->
+            {% if course.topics_covered %}
             <div class="card border-0 shadow-sm course-section-card">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3 d-flex align-items-center">
@@ -176,17 +171,13 @@
                         Topics Covered
                     </h5>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-light text-dark border">HTML5</span>
-                        <span class="badge bg-light text-dark border">CSS3 Grid & Flexbox</span>
-                        <span class="badge bg-light text-dark border">JavaScript ES6+</span>
-                        <span class="badge bg-light text-dark border">React.js</span>
-                        <span class="badge bg-light text-dark border">Node.js Runtime</span>
-                        <span class="badge bg-light text-dark border">Express Framework</span>
-                        <span class="badge bg-light text-dark border">MongoDB</span>
-                        <span class="badge bg-light text-dark border">Git & GitHub</span>
+                        {% for topic in course.topics_covered %}
+                        <span class="badge bg-light text-dark border">{{ topic }}</span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <div class="col-lg-4">
@@ -200,29 +191,8 @@
                                 <span class="material-icons">play_lesson</span>
                             </div>
                             <div>
-                                <p class="mb-0 fw-semibold small">12 Core Modules</p>
-                                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Video lectures &
-                                    reading</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box icon-box-orange flex-shrink-0 me-3">
-                                <span class="material-icons">quiz</span>
-                            </div>
-                            <div>
-                                <p class="mb-0 fw-semibold small">5 Assignments</p>
-                                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Hands-on practice
-                                </p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box icon-box-indigo flex-shrink-0 me-3">
-                                <span class="material-icons">code</span>
-                            </div>
-                            <div>
-                                <p class="mb-0 fw-semibold small">3 Capstone Projects</p>
-                                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Portfolio ready
-                                    apps</p>
+                                <p class="mb-0 fw-semibold small">{{ lessons|length }} Lessons</p>
+                                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">Video lectures</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -239,21 +209,76 @@
                 </div>
             </div>
 
-            <!-- Expectations -->
+            <!-- Lesson List -->
+            {% if lessons %}
             <div class="card border-0 shadow-sm mb-4 course-section-card">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3">Expectations</h6>
-                    <p class="small text-secondary mb-3">To succeed in this bootcamp, students are expected
-                        to:</p>
-                    <ul class="small text-secondary ps-3">
-                        <li class="mb-2">Dedicate <strong>10-15 hours</strong> per week to study</li>
-                        <li class="mb-2">Participate in peer code reviews</li>
-                        <li class="mb-2">Join the weekly live Q&A sessions</li>
-                        <li class="mb-0">Complete the final project by the deadline</li>
-                    </ul>
+                    <h6 class="fw-bold mb-3">Course Lessons</h6>
+                    <div class="d-flex flex-column gap-2">
+                        {% for lesson in lessons[:6] %}
+                        <div class="d-flex align-items-center p-2 rounded bg-light">
+                            <span class="badge bg-secondary me-2">{{ loop.index }}</span>
+                            <span class="small flex-grow-1">{{ lesson.title }}</span>
+                            <span class="text-secondary small">{{ (lesson.video_duration // 60)|int if
+                                lesson.video_duration else '0' }}m</span>
+                        </div>
+                        {% endfor %}
+                        {% if lessons|length > 6 %}
+                        <p class="text-secondary small text-center mb-0">+ {{ lessons|length - 6 }} more lessons</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
+    {% else %}
+    <!-- Course Not Found -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <span class="material-icons text-secondary mb-3" style="font-size: 4rem;">error_outline</span>
+            <h4 class="fw-bold mb-2">Course Not Found</h4>
+            <p class="text-secondary mb-3">The course you're looking for doesn't exist or has been removed.</p>
+            <a href="{{ url_for('browse_courses') }}" class="btn btn-primary">Browse Courses</a>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+{% block scripts %}
+<script>
+    document.getElementById('enrollBtn')?.addEventListener('click', async function () {
+        const courseId = this.dataset.courseId;
+
+        try {
+            const response = await fetch('/api/enrollments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ course_id: courseId })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    location.reload();
+                }
+            } else {
+                if (response.status === 401) {
+                    window.location.href = "{{ url_for('student_login') }}";
+                    return;
+                }
+                const data = await response.json();
+                alert(data.detail || 'Failed to enroll');
+            }
+        } catch (error) {
+            console.error('Enrollment error:', error);
+            alert('Failed to enroll. Please try again.');
+        }
+    });
+</script>
+{% endblock %}
 {% endblock %}

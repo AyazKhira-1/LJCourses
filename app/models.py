@@ -3,21 +3,18 @@ Database models for LJCourses platform
 """
 from datetime import datetime
 from app.db import Base
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, Float, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Text, Boolean, DateTime, Integer, Float, ForeignKey, ARRAY
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class UserRole:
     STUDENT = 'student'
     INSTRUCTOR = 'instructor'
     ADMIN = 'admin'
 
-class DifficultyLevel:
-    BEGINNER = 'Beginner'
-    INTERMEDIATE = 'Intermediate'
-    ADVANCED = 'Advanced'
 
 class User(Base):
     """User model for students, instructors, and admins"""
@@ -43,8 +40,7 @@ class User(Base):
     last_login = Column(DateTime, nullable=True)
 
     # Relationships
-    enrollments = relationship('Enrollment', back_populates='student', lazy='dynamic', cascade='all, delete-orphan')
-    taught_courses = relationship('Course', back_populates='instructor', lazy='dynamic', foreign_keys='Course.instructor_id')
+    enrollments = relationship('Enrollment', back_populates='student', cascade='all, delete-orphan')
 
     def set_password(self, password):
         """Hash and set password"""
@@ -58,79 +54,120 @@ class User(Base):
         return f'<User {self.email}>'
 
 
+class Instructor(Base):
+    """Instructor model for course instructors"""
+    __tablename__ = 'instructors'
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False)
+    designation = Column(String(200), nullable=True)
+    image = Column(String(500), nullable=True)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    # Relationships
+    courses = relationship('Course', back_populates='instructor')
+
+    def __repr__(self):
+        return f'<Instructor {self.name}>'
+
+
 class Category(Base):
-    """Course category model"""
+    """Category model for course categorization"""
     __tablename__ = 'categories'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(50), unique=True, nullable=False)
-    slug = Column(String(50), unique=True, nullable=False)
-    description = Column(Text, nullable=True)
-    icon = Column(String(50), nullable=True)  # Material icon name
-    color = Column(String(7), nullable=True)  # Hex color code (e.g., #FF6B6B)
+    name = Column(String(100), nullable=False, unique=True)
+    slug = Column(String(100), nullable=False, unique=True, index=True)
+    
+    # Timestamps
     created_at = Column(DateTime, default=datetime.now, nullable=False)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     # Relationships
-    courses = relationship('Course', back_populates='category', lazy='dynamic')
+    courses = relationship('Course', back_populates='category')
 
     def __repr__(self):
         return f'<Category {self.name}>'
 
 
 class Course(Base):
-    """Course model"""
+    """Course model for all courses on the platform"""
     __tablename__ = 'courses'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    instructor_id = Column(UUID(as_uuid=True), ForeignKey('instructors.id'), nullable=False)
+    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=False)
+    
+    # Basic Information
     title = Column(String(200), nullable=False)
-    slug = Column(String(200), unique=True, nullable=False)
+    slug = Column(String(200), nullable=False, unique=True, index=True)
+    small_description = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
-    thumbnail = Column(String(255), nullable=True)  # Course thumbnail image URL
-    duration_hours = Column(Integer, nullable=True)  # Estimated completion time in hours
-    difficulty_level = Column(String(20), nullable=True)  # Beginner, Intermediate, Advanced
+    thumbnail = Column(String(500), nullable=True)
     
-    # Foreign Keys
-    instructor_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=True)
-    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=True)
+    # Course Details
+    duration_hours = Column(Float, nullable=True)  # Duration in hours (e.g., 12.5 for 12h 30m)
+    difficulty_level = Column(String(50), nullable=True)  # e.g., "Beginner to Pro", "Intermediate"
+    rating = Column(Float, nullable=True, default=0.0)  # Rating out of 5
     
-    # Status fields
-    is_published = Column(Boolean, default=False)
-    is_featured = Column(Boolean, default=False)
-    
-    # Rating
-    rating = Column(Float, default=0.0)
-    total_ratings = Column(Integer, default=0)
+    # Extended Information
+    course_purpose = Column(Text, nullable=True)
+    learning_objectives = Column(ARRAY(Text), nullable=True)  # Array of learning objectives
+    topics_covered = Column(ARRAY(String(200)), nullable=True)  # Array of topics
     
     # Timestamps
+    published_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.now, nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    published_at = Column(DateTime, nullable=True)
 
     # Relationships
-    instructor = relationship('User', back_populates='taught_courses', foreign_keys=[instructor_id])
+    instructor = relationship('Instructor', back_populates='courses')
     category = relationship('Category', back_populates='courses')
-    lessons = relationship('Lesson', back_populates='course', lazy='dynamic', cascade='all, delete-orphan', order_by='Lesson.order')
-    enrollments = relationship('Enrollment', back_populates='course', lazy='dynamic', cascade='all, delete-orphan')
+    lessons = relationship('Lesson', back_populates='course', cascade='all, delete-orphan', order_by='Lesson.order')
+    enrollments = relationship('Enrollment', back_populates='course', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Course {self.title}>'
 
 
+class Enrollment(Base):
+    """Enrollment model linking students to courses"""
+    __tablename__ = 'enrollments'
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    course_id = Column(UUID(as_uuid=True), ForeignKey('courses.id'), nullable=False)
+    
+    # Timestamps
+    enrolled_at = Column(DateTime, default=datetime.now, nullable=False)
+    completed_at = Column(DateTime, nullable=True)
+    last_accessed = Column(DateTime, nullable=True)
+
+    # Relationships
+    student = relationship('User', back_populates='enrollments')
+    course = relationship('Course', back_populates='enrollments')
+    lesson_progress = relationship('LessonProgress', back_populates='enrollment', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<Enrollment student={self.student_id} course={self.course_id}>'
+
+
 class Lesson(Base):
-    """Lesson model - individual lessons/modules within a course"""
+    """Lesson model for course lessons/videos"""
     __tablename__ = 'lessons'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     course_id = Column(UUID(as_uuid=True), ForeignKey('courses.id'), nullable=False)
+    
+    # Lesson Information
+    order = Column(Integer, nullable=False)  # Order within the course
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    content = Column(Text, nullable=True)  # Rich text lesson content (HTML)
-    video_url = Column(String(255), nullable=True)  # Video resource URL
-    video_duration = Column(Integer, nullable=True)  # Video duration in seconds
-    resources_url = Column(String(255), nullable=True)  # Additional resources link
-    order = Column(Integer, default=0)  # Display order in course
-    is_free = Column(Boolean, default=False)  # Free preview lesson
-    is_published = Column(Boolean, default=True)  # Publication status
+    video_duration = Column(Integer, nullable=True)  # Duration in seconds
+    video_url = Column(String(500), nullable=True)  # Video file/URL
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.now, nullable=False)
@@ -138,54 +175,31 @@ class Lesson(Base):
 
     # Relationships
     course = relationship('Course', back_populates='lessons')
-    lesson_progress = relationship('LessonProgress', back_populates='lesson', lazy='dynamic', cascade='all, delete-orphan')
+    lesson_progress = relationship('LessonProgress', back_populates='lesson', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Lesson {self.title}>'
 
 
-class Enrollment(Base):
-    """Enrollment model - tracks student enrollments in courses"""
-    __tablename__ = 'enrollments'
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
-    course_id = Column(UUID(as_uuid=True), ForeignKey('courses.id'), nullable=False)
-    is_active = Column(Boolean, default=True)  # Enrollment active status
-    progress_percentage = Column(Float, default=0.0)  # Course completion (0-100)
-    
-    # Timestamps
-    enrolled_at = Column(DateTime, default=datetime.now, nullable=False)
-    completed_at = Column(DateTime, nullable=True)  # Course completion timestamp
-    last_accessed = Column(DateTime, default=datetime.now, nullable=False)
-
-    # Relationships
-    student = relationship('User', back_populates='enrollments')
-    course = relationship('Course', back_populates='enrollments')
-    lesson_progress = relationship('LessonProgress', back_populates='enrollment', lazy='dynamic', cascade='all, delete-orphan')
-
-    def __repr__(self):
-        return f'<Enrollment student_id={self.student_id} course_id={self.course_id}>'
-
-
 class LessonProgress(Base):
-    """Lesson progress model - tracks individual lesson completion for each enrollment"""
+    """Lesson progress model tracking student progress through lessons"""
     __tablename__ = 'lesson_progress'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     enrollment_id = Column(UUID(as_uuid=True), ForeignKey('enrollments.id'), nullable=False)
     lesson_id = Column(UUID(as_uuid=True), ForeignKey('lessons.id'), nullable=False)
-    is_completed = Column(Boolean, default=False)  # Completion status
-    watch_time = Column(Integer, default=0)  # Time watched in seconds
+    
+    # Progress Information
+    is_completed = Column(Boolean, default=False)
     
     # Timestamps
-    started_at = Column(DateTime, default=datetime.now, nullable=False)  # First access timestamp
-    completed_at = Column(DateTime, nullable=True)  # Completion timestamp
-    last_accessed = Column(DateTime, default=datetime.now, nullable=False)  # Last access timestamp
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+    last_accessed = Column(DateTime, nullable=True)
 
     # Relationships
     enrollment = relationship('Enrollment', back_populates='lesson_progress')
     lesson = relationship('Lesson', back_populates='lesson_progress')
 
     def __repr__(self):
-        return f'<LessonProgress enrollment_id={self.enrollment_id} lesson_id={self.lesson_id}>'
+        return f'<LessonProgress enrollment={self.enrollment_id} lesson={self.lesson_id}>'

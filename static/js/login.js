@@ -96,13 +96,25 @@ async function handleLoginSubmit(event) {
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('user_email', data.user.email);
             localStorage.setItem('user_name', data.user.full_name);
+            localStorage.setItem('user_id', data.user.id);
 
             showNotification('Login successful! Redirecting...', 'success');
 
-            // Redirect after 1.5 seconds
+            // Now also login to Flask for session-based auth
+            // Submit form directly to Flask endpoint
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+
+            const flaskResponse = await fetch('/student-login', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Redirect to my-courses page
             setTimeout(() => {
-                window.location.href = '/profile'; // Redirect to home or dashboard
-            }, 1500);
+                window.location.href = '/my-courses';
+            }, 500);
         } else {
             // Handle error response
             const errorMessage = data.detail || 'Login failed. Please check your credentials.';

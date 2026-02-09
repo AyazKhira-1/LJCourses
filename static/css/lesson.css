@@ -107,24 +107,6 @@ body.lesson-page {
     border-color: #374151 !important;
 }
 
-/* Module sections */
-.module-header {
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.module-header:hover {
-    background-color: #e9ecef !important;
-}
-
-[data-bs-theme="dark"] .module-header {
-    background-color: rgba(75, 85, 99, 0.3) !important;
-}
-
-[data-bs-theme="dark"] .module-header:hover {
-    background-color: rgba(75, 85, 99, 0.5) !important;
-}
-
 /* Lesson items */
 .lesson-item {
     cursor: pointer;

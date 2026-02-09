@@ -159,7 +159,10 @@
                         </div>
 
                         <!-- Login Form -->
-                        <form class="d-flex flex-column gap-3">
+                        {% if error %}
+                        <div class="alert alert-danger py-2 small mb-3">{{ error }}</div>
+                        {% endif %}
+                        <form class="d-flex flex-column gap-3" method="POST">
                             <!-- Email Address -->
                             <div>
                                 <label class="form-label small fw-medium" for="email">Email Address</label>

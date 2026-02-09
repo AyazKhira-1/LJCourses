@@ -23,78 +23,20 @@ function showNotification(message, type = 'info') {
 }
 
 /**
- * Get authentication token from localStorage
- */
-function getAuthToken() {
-    return localStorage.getItem('access_token');
-}
-
-/**
- * Fetch current user profile data
- */
-async function fetchUserProfile() {
-    const token = getAuthToken();
-
-    if (!token) {
-        showNotification('Please login to view your profile', 'warning');
-        setTimeout(() => {
-            window.location.href = '/student_login';
-        }, 1500);
-        return null;
-    }
-
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/me', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (response.ok) {
-            const userData = await response.json();
-            return userData;
-        } else if (response.status === 401) {
-            showNotification('Session expired. Please login again', 'warning');
-            localStorage.clear();
-            setTimeout(() => {
-                window.location.href = '/student_login';
-            }, 1500);
-            return null;
-        } else {
-            showNotification('Failed to load profile data', 'danger');
-            return null;
-        }
-    } catch (error) {
-        console.error('Error fetching profile:', error);
-        showNotification('Network error. Please try again.', 'danger');
-        return null;
-    }
-}
-
-/**
  * Populate profile form with user data
  */
 function populateProfile(userData) {
-
-    // Navbar Header section
-    document.getElementById('header-user-name').textContent = userData.full_name || 'User';
-    document.getElementById('header-user-role').textContent = userData.role || 'role';
-
     // Header section
     document.getElementById('profile-name-header').textContent = userData.full_name || 'User';
     document.getElementById('profile-email-header').textContent = userData.email || '';
 
     // Profile photo
-    const profilePhoto = document.getElementById('profile-photo')
-    const headerPhoto = document.getElementById('header-user-photo');
+    const profilePhoto = document.getElementById('profile-photo');
     const photoUrl = userData.profile_image
         ? `http://127.0.0.1:8000${userData.profile_image}`
         : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
 
     profilePhoto.src = photoUrl;
-    headerPhoto.src = photoUrl;
 
     // Form inputs
     document.getElementById('input-fullname').value = userData.full_name || '';
@@ -102,18 +44,15 @@ function populateProfile(userData) {
     document.getElementById('input-major').value = userData.major || '';
     document.getElementById('input-bio').value = userData.bio || '';
 
-    // Store user ID and data in localStorage
+    // Store user ID for later use
     document.body.dataset.userId = userData.id;
-    localStorage.setItem('user_name', userData.full_name || 'User');
-    localStorage.setItem('user_role', userData.role || 'Student');
-    localStorage.setItem('user_profile_photo', photoUrl);
 }
 
 /**
  * Upload profile photo
  */
 async function uploadProfilePhoto(file) {
-    const token = getAuthToken();
+    const token = window.getAuthToken();
 
     if (!token) {
         showNotification('Please login to upload photo', 'warning');
@@ -153,14 +92,13 @@ async function uploadProfilePhoto(file) {
 
             // Update photo in UI
             const profilePhoto = document.getElementById('profile-photo');
-            profilePhoto.src = `http://127.0.0.1:8000${data.photo_url}`;
+            const headerPhoto = document.getElementById('header-user-photo');
+            const photoUrl = `http://127.0.0.1:8000${data.photo_url}`;
 
-            // Update header photo in UI (for navigation bar)
-            const profileHeaderPhoto = document.getElementById('header-user-photo');
-            profileHeaderPhoto.src = `http://127.0.0.1:8000${data.photo_url}`;
-
-            // Update localStorage
-            localStorage.setItem('user_profile_photo', `http://127.0.0.1:8000${data.photo_url}`);
+            profilePhoto.src = photoUrl;
+            if (headerPhoto) {
+                headerPhoto.src = photoUrl;
+            }
         } else {
             showNotification(data.detail || 'Failed to upload photo', 'danger');
         }
@@ -174,7 +112,7 @@ async function uploadProfilePhoto(file) {
  * Update profile data
  */
 async function updateProfile(profileData) {
-    const token = getAuthToken();
+    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
     if (!token || !userId) {
@@ -212,8 +150,8 @@ async function updateProfile(profileData) {
  * Initialize profile page
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch and populate user data
-    const userData = await fetchUserProfile();
+    // Fetch and populate user data (using shared function from header.js)
+    const userData = await window.fetchUserProfile();
     if (userData) {
         populateProfile(userData);
     }

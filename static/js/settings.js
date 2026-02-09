@@ -23,75 +23,17 @@ function showNotification(message, type = 'info') {
 }
 
 /**
- * Get authentication token from localStorage
- */
-function getAuthToken() {
-    return localStorage.getItem('access_token');
-}
-
-/**
- * Fetch current user profile data
- */
-async function fetchUserProfile() {
-    const token = getAuthToken();
-
-    if (!token) {
-        showNotification('Please login to view settings', 'warning');
-        setTimeout(() => {
-            window.location.href = '/student_login';
-        }, 1500);
-        return null;
-    }
-
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/me', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (response.ok) {
-            const userData = await response.json();
-            return userData;
-        } else if (response.status === 401) {
-            showNotification('Session expired. Please login again', 'warning');
-            localStorage.clear();
-            setTimeout(() => {
-                window.location.href = '/student_login';
-            }, 1500);
-            return null;
-        } else {
-            showNotification('Failed to load profile data', 'danger');
-            return null;
-        }
-    } catch (error) {
-        console.error('Error fetching profile:', error);
-        showNotification('Network error. Please try again.', 'danger');
-        return null;
-    }
-}
-
-/**
  * Populate settings form with user data
  */
 function populateSettings(userData) {
-
-    // Navbar Header section
-    document.getElementById('header-user-name').textContent = userData.full_name || 'User';
-    document.getElementById('header-user-role').textContent = userData.role || 'role';
-
     // Profile photo
     const profilePhoto = document.getElementById('settings-profile-photo');
-    const headerPhoto = document.getElementById('header-user-photo');
     const photoUrl = userData.profile_image
         ? `http://127.0.0.1:8000${userData.profile_image}`
         : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
 
-    if (profilePhoto && headerPhoto) {
+    if (profilePhoto) {
         profilePhoto.src = photoUrl;
-        headerPhoto.src = photoUrl;
     }
 
     // Bio textarea
@@ -100,13 +42,8 @@ function populateSettings(userData) {
         bioTextarea.value = userData.bio || '';
     }
 
-    // Store user ID and data in localStorage
+    // Store user ID for later use
     document.body.dataset.userId = userData.id;
-
-    // Save user info to localStorage
-    localStorage.setItem('user_name', userData.full_name || 'User');
-    localStorage.setItem('user_role', userData.role || 'Student');
-    localStorage.setItem('user_profile_photo', photoUrl);
 
     // Show/hide remove photo button based on whether user has custom photo
     const removePhotoBtn = document.getElementById('remove-photo-btn');
@@ -119,7 +56,7 @@ function populateSettings(userData) {
  * Upload profile photo
  */
 async function uploadProfilePhoto(file) {
-    const token = getAuthToken();
+    const token = window.getAuthToken();
 
     if (!token) {
         showNotification('Please login to upload photo', 'warning');
@@ -186,7 +123,7 @@ async function uploadProfilePhoto(file) {
  * Remove profile photo
  */
 async function removeProfilePhoto() {
-    const token = getAuthToken();
+    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
     if (!token || !userId) {
@@ -245,7 +182,7 @@ async function removeProfilePhoto() {
  * Save settings changes
  */
 async function saveSettings() {
-    const token = getAuthToken();
+    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
     if (!token || !userId) {
@@ -289,8 +226,8 @@ async function saveSettings() {
  * Initialize settings page
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch and populate user data
-    const userData = await fetchUserProfile();
+    // Fetch and populate user data (using shared function from header.js)
+    const userData = await window.fetchUserProfile();
     if (userData) {
         populateSettings(userData);
     }
