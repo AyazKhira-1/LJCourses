@@ -32,11 +32,9 @@ function populateProfile(userData) {
 
     // Profile photo
     const profilePhoto = document.getElementById('profile-photo');
-    const photoUrl = userData.profile_image
-        ? `http://127.0.0.1:8000${userData.profile_image}`
-        : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
-
-    profilePhoto.src = photoUrl;
+    if (userData.profile_image) {
+        profilePhoto.src = userData.profile_image;
+    }
 
     // Form inputs
     document.getElementById('input-fullname').value = userData.full_name || '';
@@ -52,12 +50,6 @@ function populateProfile(userData) {
  * Upload profile photo
  */
 async function uploadProfilePhoto(file) {
-    const token = window.getAuthToken();
-
-    if (!token) {
-        showNotification('Please login to upload photo', 'warning');
-        return;
-    }
 
     // Validate file
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -77,11 +69,8 @@ async function uploadProfilePhoto(file) {
     formData.append('file', file);
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/upload/profile-photo', {
+        const response = await fetch('/api/upload/profile-photo', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
             body: formData
         });
 
@@ -93,11 +82,12 @@ async function uploadProfilePhoto(file) {
             // Update photo in UI
             const profilePhoto = document.getElementById('profile-photo');
             const headerPhoto = document.getElementById('header-user-photo');
-            const photoUrl = `http://127.0.0.1:8000${data.photo_url}`;
 
-            profilePhoto.src = photoUrl;
-            if (headerPhoto) {
-                headerPhoto.src = photoUrl;
+            if (data.photo_url) {
+                profilePhoto.src = data.photo_url;
+                if (headerPhoto) {
+                    headerPhoto.src = data.photo_url;
+                }
             }
         } else {
             showNotification(data.detail || 'Failed to upload photo', 'danger');
@@ -112,19 +102,17 @@ async function uploadProfilePhoto(file) {
  * Update profile data
  */
 async function updateProfile(profileData) {
-    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
-    if (!token || !userId) {
-        showNotification('Please login to update profile', 'warning');
+    if (!userId) {
+        showNotification('User ID not found', 'danger');
         return;
     }
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/students/${userId}`, {
+        const response = await fetch(`/api/students/${userId}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(profileData)
@@ -137,6 +125,8 @@ async function updateProfile(profileData) {
 
             // Update header with new name
             document.getElementById('profile-name-header').textContent = data.full_name || 'User';
+            const headerName = document.getElementById('header-user-name');
+            if (headerName) headerName.textContent = data.full_name;
         } else {
             showNotification(data.detail || 'Failed to update profile', 'danger');
         }
@@ -150,11 +140,11 @@ async function updateProfile(profileData) {
  * Initialize profile page
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch and populate user data (using shared function from header.js)
-    const userData = await window.fetchUserProfile();
-    if (userData) {
-        populateProfile(userData);
-    }
+    // Fetch and populate user data - REMOVED: Managed by server-side rendering
+    // const userData = await window.fetchUserProfile();
+    // if (userData) {
+    //     populateProfile(userData);
+    // }
 
     // Photo upload button handler
     const photoButton = document.getElementById('photo-upload-btn');

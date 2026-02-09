@@ -8,7 +8,7 @@
 {% block styles %}
 <link href="{{ url_for('static', filename='css/settings.css' ) }}" rel="stylesheet" />{% endblock %}
 
-{% block content %}
+{% block student_content %}
 <div class="container-fluid" style="max-width: 60rem;">
     <!-- Page Header -->
     <div class="mb-4">
@@ -29,7 +29,7 @@
                     <div class="d-flex flex-column flex-sm-row align-items-center gap-3">
                         <div class="position-relative">
                             <img id="settings-profile-photo"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo"
+                                src="{{ user.profile_image if user.profile_image else 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo' }}"
                                 class="rounded-circle border border-3"
                                 style="width: 6rem; height: 6rem; object-fit: cover;" alt="Profile">
                             <input type="file" id="photo-file-input" accept="image/*" style="display: none;">
@@ -47,14 +47,15 @@
                                 <button id="change-photo-btn" type="button"
                                     class="btn btn-outline-secondary btn-sm">Change Photo</button>
                                 <button id="remove-photo-btn" type="button"
-                                    class="btn btn-link btn-sm text-danger text-decoration-none">Remove</button>
+                                    class="btn btn-link btn-sm text-danger text-decoration-none"
+                                    style="display: {{ 'inline-block' if user.profile_image and 'lh3.googleusercontent.com' not in user.profile_image else 'none' }};">Remove</button>
                             </div>
                         </div>
                     </div>
                     <div>
                         <label class="form-label fw-semibold small">Public Bio</label>
                         <textarea id="settings-bio" class="form-control" rows="4"
-                            placeholder="Tell us a little about yourself..."></textarea>
+                            placeholder="Tell us a little about yourself...">{{ user.bio if user.bio else '' }}</textarea>
                         <p class="form-text">This will be visible on your public student profile.</p>
                     </div>
                 </div>
@@ -210,7 +211,7 @@
                             <p class="text-secondary small mb-0">It's a good idea to use a strong password
                                 that you don't use elsewhere.</p>
                         </div>
-                        <a href="{{ url_for('change_password') }}"
+                        <a href="{{ url_for('auth.change_password') }}"
                             class="btn btn-primary btn-sm align-self-sm-center">Change Password</a>
                     </div>
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 p-3 border rounded">

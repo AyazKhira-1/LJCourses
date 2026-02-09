@@ -23,17 +23,63 @@ function showNotification(message, type = 'info') {
 }
 
 /**
+ * Select theme from settings card
+ */
+function selectTheme(theme) {
+    // Call common function to set theme
+    if (typeof setTheme === 'function') {
+        setTheme(theme);
+    } else {
+        // Fallback if common.js hasn't loaded (unlikely)
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+
+    updateThemeCards(theme);
+}
+
+/**
+ * Update active state of theme cards
+ */
+function updateThemeCards(theme) {
+    const lightCard = document.getElementById('lightThemeCard');
+    const darkCard = document.getElementById('darkThemeCard');
+
+    if (!lightCard || !darkCard) return;
+
+    if (theme === 'dark') {
+        lightCard.classList.remove('active');
+        darkCard.classList.add('active');
+
+        // Update icons
+        lightCard.querySelector('.theme-check-icon')?.classList.replace('check_circle', 'radio_button_unchecked');
+        lightCard.querySelector('.theme-check-icon')?.classList.replace('text-primary', 'text-secondary');
+
+        darkCard.querySelector('.theme-uncheck-icon')?.classList.replace('radio_button_unchecked', 'check_circle');
+        darkCard.querySelector('.theme-uncheck-icon')?.classList.replace('text-secondary', 'text-primary');
+    } else {
+        darkCard.classList.remove('active');
+        lightCard.classList.add('active');
+
+        // Update icons
+        darkCard.querySelector('.theme-uncheck-icon')?.classList.replace('check_circle', 'radio_button_unchecked');
+        darkCard.querySelector('.theme-uncheck-icon')?.classList.replace('text-primary', 'text-secondary');
+
+        lightCard.querySelector('.theme-check-icon')?.classList.replace('radio_button_unchecked', 'check_circle');
+        lightCard.querySelector('.theme-check-icon')?.classList.replace('text-secondary', 'text-primary');
+    }
+}
+
+
+/**
  * Populate settings form with user data
  */
 function populateSettings(userData) {
     // Profile photo
     const profilePhoto = document.getElementById('settings-profile-photo');
-    const photoUrl = userData.profile_image
-        ? `http://127.0.0.1:8000${userData.profile_image}`
-        : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
 
-    if (profilePhoto) {
-        profilePhoto.src = photoUrl;
+    if (profilePhoto && userData.profile_image) {
+        profilePhoto.src = userData.profile_image;
     }
 
     // Bio textarea
@@ -48,7 +94,10 @@ function populateSettings(userData) {
     // Show/hide remove photo button based on whether user has custom photo
     const removePhotoBtn = document.getElementById('remove-photo-btn');
     if (removePhotoBtn) {
-        removePhotoBtn.style.display = userData.profile_image ? 'inline-block' : 'none';
+        // Simple check: if path contains 'uploads', it's custom. 
+        // Or if it's not the default google image.
+        const isDefault = !userData.profile_image || userData.profile_image.includes('lh3.googleusercontent.com');
+        removePhotoBtn.style.display = isDefault ? 'none' : 'inline-block';
     }
 }
 
@@ -56,13 +105,6 @@ function populateSettings(userData) {
  * Upload profile photo
  */
 async function uploadProfilePhoto(file) {
-    const token = window.getAuthToken();
-
-    if (!token) {
-        showNotification('Please login to upload photo', 'warning');
-        return;
-    }
-
     // Validate file
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
@@ -81,11 +123,8 @@ async function uploadProfilePhoto(file) {
     formData.append('file', file);
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/upload/profile-photo', {
+        const response = await fetch('/api/upload/profile-photo', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
             body: formData
         });
 
@@ -97,18 +136,16 @@ async function uploadProfilePhoto(file) {
             // Update photo in UI
             const profilePhoto = document.getElementById('settings-profile-photo');
             const headerPhoto = document.getElementById('header-user-photo');
-            if (profilePhoto && headerPhoto) {
-                profilePhoto.src = `http://127.0.0.1:8000${data.photo_url}`;
-                headerPhoto.src = `http://127.0.0.1:8000${data.photo_url}`;
-            }
 
-            // Update localStorage
-            localStorage.setItem('user_profile_photo', `http://127.0.0.1:8000${data.photo_url}`);
+            if (data.photo_url) {
+                if (profilePhoto) profilePhoto.src = data.photo_url;
+                if (headerPhoto) headerPhoto.src = data.photo_url;
 
-            // Show remove button
-            const removePhotoBtn = document.getElementById('remove-photo-btn');
-            if (removePhotoBtn) {
-                removePhotoBtn.style.display = 'inline-block';
+                // Show remove button
+                const removePhotoBtn = document.getElementById('remove-photo-btn');
+                if (removePhotoBtn) {
+                    removePhotoBtn.style.display = 'inline-block';
+                }
             }
         } else {
             showNotification(data.detail || 'Failed to upload photo', 'danger');
@@ -123,11 +160,10 @@ async function uploadProfilePhoto(file) {
  * Remove profile photo
  */
 async function removeProfilePhoto() {
-    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
-    if (!token || !userId) {
-        showNotification('Please login to remove photo', 'warning');
+    if (!userId) {
+        showNotification('User ID not found', 'warning');
         return;
     }
 
@@ -136,10 +172,9 @@ async function removeProfilePhoto() {
     }
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/students/${userId}`, {
+        const response = await fetch(`/api/students/${userId}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ profile_image: null })
@@ -150,25 +185,12 @@ async function removeProfilePhoto() {
         if (response.ok) {
             showNotification('Profile photo removed successfully!', 'success');
 
-            // Reset to default photo
-            const defaultPhoto = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
+            // Reset to default photo (would be better if backend returned the default URL or we refresh)
+            // For now, reload the page to get fresh state from server
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
 
-            const profilePhoto = document.getElementById('settings-profile-photo');
-            const headerPhoto = document.getElementById('header-user-photo');
-
-            if (profilePhoto && headerPhoto) {
-                profilePhoto.src = defaultPhoto;
-                headerPhoto.src = defaultPhoto;
-            }
-
-            // Update localStorage
-            localStorage.setItem('user_profile_photo', defaultPhoto);
-
-            // Hide remove button
-            const removePhotoBtn = document.getElementById('remove-photo-btn');
-            if (removePhotoBtn) {
-                removePhotoBtn.style.display = 'none';
-            }
         } else {
             showNotification(data.detail || 'Failed to remove photo', 'danger');
         }
@@ -182,11 +204,10 @@ async function removeProfilePhoto() {
  * Save settings changes
  */
 async function saveSettings() {
-    const token = window.getAuthToken();
     const userId = document.body.dataset.userId;
 
-    if (!token || !userId) {
-        showNotification('Please login to save settings', 'warning');
+    if (!userId) {
+        showNotification('User ID not found', 'warning');
         return;
     }
 
@@ -200,10 +221,9 @@ async function saveSettings() {
     };
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/students/${userId}`, {
+        const response = await fetch(`/api/students/${userId}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updateData)
@@ -226,11 +246,14 @@ async function saveSettings() {
  * Initialize settings page
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch and populate user data (using shared function from header.js)
-    const userData = await window.fetchUserProfile();
-    if (userData) {
-        populateSettings(userData);
-    }
+    // Initialize theme state
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    updateThemeCards(currentTheme);
+
+    // Listen for theme changes from navbar
+    document.addEventListener('themeChanged', (e) => {
+        updateThemeCards(e.detail.theme);
+    });
 
     // Photo upload camera button handler
     const cameraButton = document.getElementById('photo-camera-btn');

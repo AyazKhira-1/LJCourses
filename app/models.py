@@ -3,7 +3,7 @@ Database models for LJCourses platform
 """
 from datetime import datetime
 from app.db import Base
-from sqlalchemy import Column, String, Text, Boolean, DateTime, Integer, Float, ForeignKey, ARRAY
+from sqlalchemy import Column, String, Text, Boolean, DateTime, Integer, Float, ForeignKey, ARRAY, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 import uuid
@@ -140,6 +140,10 @@ class Enrollment(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     student_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     course_id = Column(UUID(as_uuid=True), ForeignKey('courses.id'), nullable=False)
+    
+    __table_args__ = (
+        UniqueConstraint('student_id', 'course_id', name='uq_student_course'),
+    )
     
     # Timestamps
     enrolled_at = Column(DateTime, default=datetime.now, nullable=False)

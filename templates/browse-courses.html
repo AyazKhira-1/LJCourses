@@ -4,7 +4,7 @@
 
 {% set active_page = 'browse_courses' %}
 
-{% block content %}
+{% block student_content %}
 <div class="container-fluid" style="max-width: 90rem;">
     <!-- Page Heading -->
     <div class="mb-4">
@@ -15,10 +15,10 @@
 
     <!-- Category Filters -->
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="{{ url_for('browse_courses') }}"
+        <a href="{{ url_for('course.browse_courses') }}"
             class="btn btn-sm rounded-pill px-4 {% if selected_category == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">All</a>
         {% for category in categories %}
-        <a href="{{ url_for('browse_courses', category=category.slug) }}"
+        <a href="{{ url_for('course.browse_courses', category=category.slug) }}"
             class="btn btn-sm rounded-pill px-4 {% if selected_category == category.slug %}btn-dark{% else %}btn-outline-secondary{% endif %}">{{
             category.name }}</a>
         {% endfor %}
@@ -59,7 +59,7 @@
                                 <span class="small fw-medium">{{ course.instructor.name }}</span>
                             </div>
                         </div>
-                        <a href="{{ url_for('course_overview', course_slug=course.slug) }}"
+                        <a href="{{ url_for('course.course_overview', course_slug=course.slug) }}"
                             class="btn btn-primary w-100">View Course</a>
                     </div>
                 </div>
@@ -74,7 +74,8 @@
                     <span class="material-icons text-secondary mb-3" style="font-size: 4rem;">search_off</span>
                     <h5 class="fw-bold mb-2">No Courses Found</h5>
                     <p class="text-secondary mb-3">Try selecting a different category or check back later.</p>
-                    <a href="{{ url_for('browse_courses') }}" class="btn btn-outline-primary">View All Courses</a>
+                    <a href="{{ url_for('course.browse_courses') }}" class="btn btn-outline-primary">View All
+                        Courses</a>
                 </div>
             </div>
         </div>

@@ -127,8 +127,8 @@ async function handlePasswordResetSubmit(event) {
     submitButton.textContent = 'Processing...';
 
     try {
-        // Send POST request to FastAPI
-        const response = await fetch('http://127.0.0.1:8000/api/auth/reset-password', {
+        // Send POST request to Flask
+        const response = await fetch('/api/auth/reset-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -143,13 +143,12 @@ async function handlePasswordResetSubmit(event) {
             showNotification('Password reset successful! Redirecting to login...', 'success');
 
             // Determine if we're on the change password page (user is logged in)
-            // If so, clear localStorage to log them out
+            // If so, we might want to logout explicitly.
             const isChangePasswordPage = window.location.pathname.includes('change-password');
             if (isChangePasswordPage) {
-                // Clear user session data (logout)
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('user_email');
-                localStorage.removeItem('user_name');
+                // Call logout endpoint to clear session
+                await fetch('/logout');
+                localStorage.clear(); // Clear all local storage
             }
 
             // Redirect to login after 1.5 seconds

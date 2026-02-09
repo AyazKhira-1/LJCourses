@@ -4,7 +4,7 @@
 
 {% set active_page = 'completed_courses' %}
 
-{% block content %}
+{% block student_content %}
 <div class="container-fluid" style="max-width: 90rem;">
     <!-- Page Heading -->
     <div class="mb-5">
@@ -41,7 +41,7 @@
                         {{ format_duration(enrollment.course.duration_hours) }}
                     </p>
                     {% endif %}
-                    <a href="{{ url_for('course_overview', course_slug=enrollment.course.slug) }}"
+                    <a href="{{ url_for('course.course_overview', course_slug=enrollment.course.slug) }}"
                         class="btn btn-outline-primary w-100 mt-auto">View Certificate</a>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     <span class="material-icons text-secondary mb-3" style="font-size: 4rem;">emoji_events</span>
                     <h5 class="fw-bold mb-2">No Completed Courses</h5>
                     <p class="text-secondary mb-3">You haven't completed any courses yet. Keep learning!</p>
-                    <a href="{{ url_for('my_courses') }}" class="btn btn-primary">Go to My Courses</a>
+                    <a href="{{ url_for('student.my_courses') }}" class="btn btn-primary">Go to My Courses</a>
                 </div>
             </div>
         </div>

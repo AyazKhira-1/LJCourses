@@ -129,3 +129,14 @@
 [data-bs-theme="dark"] .form-icon-right.clickable:hover {
     color: #d1d5db;
 }
+
+/* 
+   Fix for Validation Icon Overlap:
+   Remove Bootstrap's default validation background icons for signup form controls 
+   as they overlap with our custom icons (eye, mail, etc).
+*/
+.form-control-signup.is-invalid,
+.form-control-signup.is-valid {
+    background-image: none !important;
+    padding-right: 2.5rem !important; /* Keep the padding for our custom icon */
+}

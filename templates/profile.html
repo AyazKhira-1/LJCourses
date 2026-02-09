@@ -6,7 +6,7 @@
 {% block styles %}
 <link href="{{ url_for('static', filename='css/profile.css' ) }}" rel="stylesheet" />{% endblock %}
 
-{% block content %}
+{% block student_content %}
 <div class="container-fluid" style="max-width: 70rem;">
     <!-- Profile Header Card -->
     <div class="card border-0 shadow-sm mb-4">
@@ -14,7 +14,7 @@
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                 <div class="position-relative">
                     <img id="profile-photo"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo"
+                        src="{{ user.profile_image if user.profile_image else 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo' }}"
                         class="rounded-circle" style="width: 7.5rem; height: 7.5rem; object-fit: cover;" alt="Profile">
                     <input type="file" id="photo-file-input" accept="image/*" style="display: none;">
                     <button id="photo-upload-btn" type="button"
@@ -24,14 +24,15 @@
                     </button>
                 </div>
                 <div class="flex-grow-1 text-center text-md-start">
-                    <h2 id="profile-name-header" class="h3 fw-bold mb-2">Loading...</h2>
+                    <h2 id="profile-name-header" class="h3 fw-bold mb-2">{{ user.full_name }}</h2>
                     <p class="text-secondary mb-3 d-flex align-items-center justify-content-md-start gap-2">
                         <span class="material-icons" style="font-size: 1.125rem;">email</span>
-                        <span id="profile-email-header">Loading...</span>
+                        <span id="profile-email-header">{{ user.email }}</span>
                     </p>
                     <div class="d-flex flex-wrap justify-content-md-start gap-2">
                         <span class="badge rounded-pill px-3 py-2"
-                            style="background-color: #dbeafe; color: #2563eb; font-size: 0.75rem; font-weight: 600;">UNDERGRADUATE</span>
+                            style="background-color: #dbeafe; color: #2563eb; font-size: 0.75rem; font-weight: 600;">{{
+                            user.role|upper }}</span>
                         <span class="badge rounded-pill px-3 py-2"
                             style="background-color: #d1fae5; color: #059669; font-size: 0.75rem; font-weight: 600;">ACTIVE</span>
                     </div>
@@ -57,20 +58,23 @@
                     </h5>
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-medium small">Full Name</label>
-                        <input id="input-fullname" type="text" class="form-control" placeholder="Enter your full name">
+                        <input id="input-fullname" type="text" class="form-control" placeholder="Enter your full name"
+                            value="{{ user.full_name }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-medium small">Email</label>
-                        <input id="input-email" type="email" class="form-control" placeholder="Your email" readonly>
+                        <input id="input-email" type="email" class="form-control" placeholder="Your email"
+                            value="{{ user.email }}" readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-secondary fw-medium small">Major</label>
-                        <input id="input-major" type="text" class="form-control" placeholder="e.g. Computer Science">
+                        <input id="input-major" type="text" class="form-control" placeholder="e.g. Computer Science"
+                            value="{{ user.major if user.major else '' }}">
                     </div>
                     <div class="mb-0">
                         <label class="form-label text-secondary fw-medium small">Bio</label>
                         <textarea id="input-bio" class="form-control" rows="4"
-                            placeholder="Tell us about yourself..."></textarea>
+                            placeholder="Tell us about yourself...">{{ user.bio if user.bio else '' }}</textarea>
                     </div>
                 </div>
             </div>
@@ -98,7 +102,7 @@
                                 <p class="text-secondary text-uppercase mb-0"
                                     style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
                                     ENROLLED</p>
-                                <p class="h5 fw-bold mb-0">12</p>
+                                <p class="h5 fw-bold mb-0">{{ enrolled_count }}</p>
                             </div>
                         </div>
 
@@ -112,7 +116,21 @@
                                 <p class="text-secondary text-uppercase mb-0"
                                     style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
                                     COMPLETED</p>
-                                <p class="h5 fw-bold mb-0">8</p>
+                                <p class="h5 fw-bold mb-0">{{ completed_count }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Remaining -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                style="width: 3rem; height: 3rem; background-color: #ffedd5;">
+                                <span class="material-icons text-warning">pending</span>
+                            </div>
+                            <div>
+                                <p class="text-secondary text-uppercase mb-0"
+                                    style="font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;">
+                                    REMAINING</p>
+                                <p class="h5 fw-bold mb-0">{{ remaining_count }}</p>
                             </div>
                         </div>
                     </div>

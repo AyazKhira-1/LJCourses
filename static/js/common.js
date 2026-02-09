@@ -9,10 +9,22 @@ function toggleDarkMode() {
     const html = document.documentElement;
     const currentTheme = html.getAttribute('data-bs-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-bs-theme', newTheme);
 
-    // Save to localStorage
-    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
+}
+
+/**
+ * Set specific theme
+ * @param {string} theme - 'light' or 'dark'
+ */
+function setTheme(theme) {
+    const html = document.documentElement;
+    html.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('theme', theme);
+
+    // Dispatch event for other components to listen
+    const event = new CustomEvent('themeChanged', { detail: { theme: theme } });
+    document.dispatchEvent(event);
 }
 
 /**

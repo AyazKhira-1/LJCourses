@@ -3,39 +3,22 @@
 // ============================================
 
 /**
- * Get authentication token from localStorage
- */
-function getAuthToken() {
-    return localStorage.getItem('access_token');
-}
-
-/**
  * Fetch current user profile data from API
  */
 async function fetchUserProfile() {
-    const token = getAuthToken();
-
-    if (!token) {
-        console.warn('No auth token found');
-        return null;
-    }
-
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/auth/me', {
+        const response = await fetch('/api/auth/me', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             }
         });
 
         if (response.ok) {
-            const userData = await response.json();
-            return userData;
+            return await response.json();
         } else if (response.status === 401) {
-            console.warn('Session expired');
-            localStorage.clear();
-            window.location.href = '/student_login';
+            console.warn('User not authenticated');
+            // Do not redirect here, just return null so header shows default state or nothing
             return null;
         } else {
             console.error('Failed to load profile data');
@@ -70,11 +53,8 @@ async function loadHeaderUserData() {
         headerUserRole.textContent = userData.role || 'Student';
     }
 
-    if (headerUserPhoto) {
-        const photoUrl = userData.profile_image
-            ? `http://127.0.0.1:8000${userData.profile_image}`
-            : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo';
-        headerUserPhoto.src = photoUrl;
+    if (headerUserPhoto && userData.profile_image) {
+        headerUserPhoto.src = userData.profile_image;
     }
 
     return userData;
@@ -88,38 +68,16 @@ async function handleLogout(event) {
         event.preventDefault();
     }
 
-    try {
-        // Get the access token from localStorage
-        const token = localStorage.getItem('access_token');
-
-        if (token) {
-            // Call the FastAPI logout API to set is_active = False
-            await fetch('http://127.0.0.1:8000/api/auth/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Logout API call failed:', error);
-        // Continue with logout even if API call fails
-    } finally {
-        // Clear all localStorage data
-        localStorage.clear();
-
-        // Redirect to Flask logout to clear session
-        window.location.href = '/logout';
-    }
+    // Redirect to Flask logout which handles session clearing
+    window.location.href = '/logout';
 }
 
 /**
  * Initialize header functionality
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Load header user data
-    loadHeaderUserData();
+    // Load header user data - REMOVED: Managed by server-side rendering
+    // loadHeaderUserData();
 
     // Setup logout buttons
     const logoutButtons = document.querySelectorAll('[data-action="logout"]');
@@ -130,4 +88,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expose functions globally for use in other scripts
 window.fetchUserProfile = fetchUserProfile;
-window.getAuthToken = getAuthToken;

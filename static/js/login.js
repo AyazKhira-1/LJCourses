@@ -67,68 +67,46 @@ async function handleLoginSubmit(event) {
         return;
     }
 
-    // Prepare data for API
-    const loginData = {
-        email: email,
-        password: password
-    };
-
     // Show loading state
     const submitButton = event.target.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = 'Logging In...';
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Logging In...';
 
     try {
-        // Send POST request to FastAPI
-        const response = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        const response = await fetch('/student-login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify(loginData)
+            body: JSON.stringify({ email, password })
         });
 
-        const data = await response.json();
+        // 1. Handle JSON response with redirect (New optimized way)
+        if (response.headers.get('content-type')?.includes('application/json')) {
+            const data = await response.json();
 
-        if (response.ok) {
-            // Success! Store the token
-            localStorage.setItem('access_token', data.access_token);
-            localStorage.setItem('user_email', data.user.email);
-            localStorage.setItem('user_name', data.user.full_name);
-            localStorage.setItem('user_id', data.user.id);
-
-            showNotification('Login successful! Redirecting...', 'success');
-
-            // Now also login to Flask for session-based auth
-            // Submit form directly to Flask endpoint
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-
-            const flaskResponse = await fetch('/student-login', {
-                method: 'POST',
-                body: formData
-            });
-
-            // Redirect to my-courses page
-            setTimeout(() => {
-                window.location.href = '/my-courses';
-            }, 500);
-        } else {
-            // Handle error response
-            const errorMessage = data.detail || 'Login failed. Please check your credentials.';
-            showNotification(errorMessage, 'danger');
-
-            // Re-enable button
-            submitButton.disabled = false;
-            submitButton.textContent = originalButtonText;
+            if (response.ok && data.success) {
+                showNotification('Login successful! Redirecting...', 'success');
+                window.location.href = data.redirect_url;
+                return;
+            } else {
+                throw new Error(data.detail || 'Login failed');
+            }
         }
+
+        // 2. Fallback for unexpected HTML response (e.g. 500 server error)
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        // Should not reach here if backend correctly returns JSON
+        window.location.reload();
+
     } catch (error) {
         console.error('Login error:', error);
-        showNotification('Network error. Please check your connection and try again.', 'danger');
-
-        // Re-enable button
+        showNotification(error.message || 'Login failed', 'danger');
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
     }

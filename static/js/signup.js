@@ -46,12 +46,45 @@ function validateEmail(email) {
 
 /**
  * Validate password
+ * Requirements:
+ * - At least 8 characters long
+ * - Include uppercase and lowercase letters
+ * - Include at least one number
+ * - Include at least one special character
  */
 function validatePassword(password) {
     if (password.length < 8) {
         return {
             valid: false,
             message: 'Password must be at least 8 characters long'
+        };
+    }
+
+    if (!/[A-Z]/.test(password)) {
+        return {
+            valid: false,
+            message: 'Password must include at least one uppercase letter'
+        };
+    }
+
+    if (!/[a-z]/.test(password)) {
+        return {
+            valid: false,
+            message: 'Password must include at least one lowercase letter'
+        };
+    }
+
+    if (!/[0-9]/.test(password)) {
+        return {
+            valid: false,
+            message: 'Password must include at least one number'
+        };
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        return {
+            valid: false,
+            message: 'Password must include at least one special character'
         };
     }
 
@@ -118,58 +151,50 @@ async function handleSignUpSubmit(event) {
         return;
     }
 
-    // Prepare data for API
-    const signupData = {
-        full_name: fullName,
-        email: email,
-        password: password,
-        confirm_password: confirmPassword
-    };
-
     // Show loading state
     const submitButton = event.target.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = 'Creating Account...';
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating Account...';
 
     try {
-        // Send POST request to FastAPI
-        const response = await fetch('http://127.0.0.1:8000/api/auth/signup', {
+        const response = await fetch('/student-sign-up', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify(signupData)
+            body: JSON.stringify({
+                full_name: fullName,
+                email: email,
+                password: password,
+                confirm_password: confirmPassword
+            })
         });
 
-        const data = await response.json();
+        // 1. Handle JSON response with redirect (New optimized way)
+        if (response.headers.get('content-type')?.includes('application/json')) {
+            const data = await response.json();
 
-        if (response.ok) {
-            // Success! Store the token
-            localStorage.setItem('access_token', data.access_token);
-            localStorage.setItem('user_email', data.user.email);
-            localStorage.setItem('user_name', data.user.full_name);
-
-            showNotification('Account created successfully! Redirecting...', 'success');
-
-            // Redirect after 1.5 seconds
-            setTimeout(() => {
-                window.location.href = '/profile'; // Redirect to home or dashboard
-            }, 1500);
-        } else {
-            // Handle error response
-            const errorMessage = data.detail || 'Sign up failed. Please try again.';
-            showNotification(errorMessage, 'danger');
-
-            // Re-enable button
-            submitButton.disabled = false;
-            submitButton.textContent = originalButtonText;
+            if (response.ok && data.success) {
+                showNotification('Account created successfully! Redirecting...', 'success');
+                window.location.href = data.redirect_url;
+                return;
+            } else {
+                throw new Error(data.detail || 'Sign up failed');
+            }
         }
+
+        // 2. Fallback for unexpected HTML response
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        window.location.reload();
+
     } catch (error) {
         console.error('Sign up error:', error);
-        showNotification('Network error. Please check your connection and try again.', 'danger');
-
-        // Re-enable button
+        showNotification(error.message || 'Network error. Please check your connection.', 'danger');
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
     }

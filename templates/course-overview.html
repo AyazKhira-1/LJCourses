@@ -8,11 +8,11 @@
 {% block styles %}
 <link href="{{ url_for('static', filename='css/course-overview.css' ) }}" rel="stylesheet" />{% endblock %}
 
-{% block content %}
+{% block student_content %}
 <div class="container-fluid" style="max-width: 75rem;">
     <!-- Back Button -->
     <div class="mb-4">
-        <a href="{{ url_for('browse_courses') }}"
+        <a href="{{ url_for('course.browse_courses') }}"
             class="btn btn-link text-decoration-none text-secondary p-0 d-inline-flex align-items-center back-link">
             <span class="material-icons me-2">arrow_back</span>
             Back to Browse Courses
@@ -92,12 +92,12 @@
                                     style="font-size: 1.25rem;">check_circle</span>
                                 Completed
                             </button>
-                            <a href="{{ url_for('lesson') }}?course={{ course.slug }}"
+                            <a href="{{ url_for('course.lesson') }}?course={{ course.slug }}"
                                 class="btn btn-outline-primary px-4 py-2 fw-semibold">
                                 Review
                             </a>
                             {% else %}
-                            <a href="{{ url_for('lesson') }}?course={{ course.slug }}"
+                            <a href="{{ url_for('course.lesson') }}?course={{ course.slug }}"
                                 class="btn btn-success px-4 py-2 fw-semibold">
                                 <span class="material-icons align-middle me-1"
                                     style="font-size: 1.25rem;">play_arrow</span>
@@ -239,7 +239,7 @@
             <span class="material-icons text-secondary mb-3" style="font-size: 4rem;">error_outline</span>
             <h4 class="fw-bold mb-2">Course Not Found</h4>
             <p class="text-secondary mb-3">The course you're looking for doesn't exist or has been removed.</p>
-            <a href="{{ url_for('browse_courses') }}" class="btn btn-primary">Browse Courses</a>
+            <a href="{{ url_for('course.browse_courses') }}" class="btn btn-primary">Browse Courses</a>
         </div>
     </div>
     {% endif %}
@@ -249,6 +249,10 @@
 <script>
     document.getElementById('enrollBtn')?.addEventListener('click', async function () {
         const courseId = this.dataset.courseId;
+
+        // Prevent double clicking
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enrolling...';
 
         try {
             const response = await fetch('/api/enrollments', {
@@ -267,8 +271,12 @@
                     location.reload();
                 }
             } else {
+                // Re-enable on error
+                this.disabled = false;
+                this.textContent = 'Enroll Now';
+
                 if (response.status === 401) {
-                    window.location.href = "{{ url_for('student_login') }}";
+                    window.location.href = "{{ url_for('auth.student_login') }}";
                     return;
                 }
                 const data = await response.json();
@@ -277,6 +285,10 @@
         } catch (error) {
             console.error('Enrollment error:', error);
             alert('Failed to enroll. Please try again.');
+
+            // Re-enable on error
+            this.disabled = false;
+            this.textContent = 'Enroll Now';
         }
     });
 </script>
