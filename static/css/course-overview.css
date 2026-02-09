@@ -122,3 +122,20 @@
     align-items: center;
     justify-content: center;
 }
+
+/* Lesson item styling */
+.lesson-item {
+    background-color: #f8f9fa; /* Light mode default */
+    color: #212529;
+}
+
+/* Dark theme lesson item */
+[data-bs-theme="dark"] .lesson-item {
+    background-color: #2b3035 !important; /* Dark grey */
+    color: #e5e7eb; /* Light text */
+}
+
+/* Adjust text-secondary inside lesson-item in dark mode */
+[data-bs-theme="dark"] .lesson-item .text-secondary {
+    color: #9ca3af !important; /* Lighter grey for secondary text */
+}

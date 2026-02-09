@@ -216,7 +216,7 @@
                     <h6 class="fw-bold mb-3">Course Lessons</h6>
                     <div class="d-flex flex-column gap-2">
                         {% for lesson in lessons[:6] %}
-                        <div class="d-flex align-items-center p-2 rounded bg-light">
+                        <div class="d-flex align-items-center p-2 rounded lesson-item">
                             <span class="badge bg-secondary me-2">{{ loop.index }}</span>
                             <span class="small flex-grow-1">{{ lesson.title }}</span>
                             <span class="text-secondary small">{{ (lesson.video_duration // 60)|int if
