@@ -36,27 +36,6 @@
     box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.25);
 }
 
-/* Google Sign-In Button */
-.btn-google {
-    background-color: #fff;
-    color: #3c4043;
-    border: 1px solid #dadce0;
-}
-
-[data-bs-theme="dark"] .btn-google {
-    background-color: #2d3748;
-    color: #e2e8f0;
-    border-color: #4b5563;
-}
-
-.btn-google:hover {
-    background-color: #f8f9fa;
-}
-
-[data-bs-theme="dark"] .btn-google:hover {
-    background-color: #374151;
-}
-
 /* Decorative Blob Animations for Hero Sections */
 .blob-decoration {
     position: absolute;

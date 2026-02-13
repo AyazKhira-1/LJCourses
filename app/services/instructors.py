@@ -1,28 +1,36 @@
 """
-Instructor management services
+Instructor management services (using User model with role='instructor')
 """
 from datetime import datetime
 from uuid import UUID
 from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.models import Instructor
+from app.models import User, UserRole
 
-def get_instructor_by_id(db: Session, instructor_id: UUID) -> Optional[Instructor]:
+def get_instructor_by_id(db: Session, instructor_id: UUID) -> Optional[User]:
     """Get instructor by UUID"""
-    return db.query(Instructor).filter(Instructor.id == instructor_id).first()
+    return db.query(User).filter(User.id == instructor_id, User.role == UserRole.INSTRUCTOR).first()
 
 
-def get_all_instructors(db: Session, skip: int = 0, limit: int = 100) -> list[type[Instructor]]:
+def get_all_instructors(db: Session, skip: int = 0, limit: int = 100) -> list[type[User]]:
     """Get all instructors"""
-    return db.query(Instructor).offset(skip).limit(limit).all()
+    return db.query(User).filter(User.role == UserRole.INSTRUCTOR).offset(skip).limit(limit).all()
 
 
-def create_instructor(db: Session, name: str, designation: Optional[str] = None, 
-                     image: Optional[str] = None) -> Instructor:
-    """Create a new instructor"""
+def create_instructor(db: Session, full_name: str, email: str, password: str,
+                     designation: Optional[str] = None, 
+                     profile_image: Optional[str] = None) -> User:
+    """Create a new instructor user"""
     try:
-        instructor = Instructor(name=name, designation=designation, image=image)
+        instructor = User(
+            full_name=full_name,
+            email=email,
+            role=UserRole.INSTRUCTOR,
+            designation=designation,
+            profile_image=profile_image
+        )
+        instructor.set_password(password)
         db.add(instructor)
         db.commit()
         db.refresh(instructor)
@@ -32,13 +40,13 @@ def create_instructor(db: Session, name: str, designation: Optional[str] = None,
         raise ValueError("Failed to create instructor") from e
 
 
-def update_instructor(db: Session, instructor_id: UUID, **kwargs) -> Optional[Instructor]:
+def update_instructor(db: Session, instructor_id: UUID, **kwargs) -> Optional[User]:
     """Update instructor by UUID"""
     instructor = get_instructor_by_id(db, instructor_id)
     if not instructor:
         return None
     
-    allowed_fields = ['name', 'designation', 'image']
+    allowed_fields = ['full_name', 'designation', 'profile_image', 'bio', 'email']
     for field, value in kwargs.items():
         if field in allowed_fields and value is not None:
             setattr(instructor, field, value)

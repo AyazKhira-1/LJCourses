@@ -46,7 +46,8 @@ def student_login():
         finally:
             db.close()
     
-    return render_template('student_login.html')
+    error = request.args.get('error')
+    return render_template('student_login.html', error=error)
 
 
 @bp.route('/student-sign-up', methods=['GET', 'POST'])
@@ -64,6 +65,8 @@ def student_sign_up():
             email = request.form.get('email')
             password = request.form.get('password')
             confirm_password = request.form.get('confirm_password')
+            
+
         
         if password != confirm_password:
              if request.is_json or request.accept_mimetypes.accept_json:
@@ -97,7 +100,8 @@ def student_sign_up():
         finally:
             db.close()
 
-    return render_template('student_sign_up.html')
+    error = request.args.get('error')
+    return render_template('student_sign_up.html', error=error)
 
 
 @bp.route('/logout')
@@ -134,6 +138,9 @@ def change_password():
 def forgot_password():
     """Forgot password page"""
     return render_template('forgot_password.html')
+
+
+
 
 
 # ==================== API Endpoints ====================

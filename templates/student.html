@@ -131,12 +131,14 @@
 
                 <!-- Search Bar (Desktop) -->
                 <div class="col-auto d-none d-lg-block me-auto">
-                    <div class="position-relative" style="width: 25rem;">
+                    <form action="{{ url_for('course.browse_courses') }}" method="GET" class="position-relative"
+                        style="width: 25rem;">
                         <span
                             class="material-icons position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">search</span>
-                        <input type="search" class="form-control ps-5" placeholder="Search courses..."
+                        <input type="search" name="q" id="desktopSearch" class="form-control ps-5"
+                            placeholder="Search courses, topics, or instructors..." autocomplete="off"
                             style="height: 2.5rem;" />
-                    </div>
+                    </form>
                 </div>
 
                 <!-- Right Side Actions -->
@@ -144,7 +146,7 @@
                     <div class="d-flex align-items-center gap-3">
                         <button class="btn btn-link p-2 text-secondary" onclick="toggleDarkMode()"
                             aria-label="Toggle Theme">
-                            <span class="material-icons icon-dark-mode">wb_sunny</span>
+                            <span class="material-icons icon-dark-mode">dark_mode</span>
                             <span class="material-icons icon-light-mode">nightlight</span>
                         </button>
 
@@ -162,7 +164,7 @@
                                 </p>
                             </div>
                             <img id="header-user-photo"
-                                src="{{ (user or current_user).profile_image if (user or current_user) and (user or current_user).profile_image else 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo' }}"
+                                src="{{ (user or current_user).profile_image if (user or current_user) and (user or current_user).profile_image else '/static/images/default-user.svg' }}"
                                 class="rounded-circle bg-image border border-2 border-white shadow-sm profile-image"
                                 style='width: 2.5rem; height: 2.5rem; object-fit: cover;' alt="Profile">
                         </a>
@@ -171,12 +173,14 @@
             </div>
 
             <!-- Mobile Search Bar -->
-            <div class="row d-lg-none mt-2">
-                <div class="position-relative" style="width: 20rem;">
-                    <span
-                        class="material-icons position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">search</span>
-                    <input type="search" class="form-control ps-5" placeholder="Search courses..."
-                        style="height: 2.5rem;" />
+            <div class="row d-lg-none pb-3">
+                <div class="col">
+                    <form action="{{ url_for('course.browse_courses') }}" method="GET" class="position-relative">
+                        <span
+                            class="material-icons position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary">search</span>
+                        <input type="search" name="q" id="mobileSearch" class="form-control ps-5"
+                            placeholder="Search courses..." autocomplete="off" style="height: 2.5rem;" />
+                    </form>
                 </div>
             </div>
         </div>

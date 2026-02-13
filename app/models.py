@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class UserRole:
     STUDENT = 'student'
     INSTRUCTOR = 'instructor'
-    ADMIN = 'admin'
+    HOD = 'hod'
 
 
 class User(Base):
@@ -30,9 +30,10 @@ class User(Base):
     profile_image = Column(String(255), nullable=True)
     bio = Column(Text, nullable=True)
     major = Column(String(100), nullable=True)
+    designation = Column(String(200), nullable=True)
 
     # Status fields
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=False)
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.now, nullable=False)
@@ -41,6 +42,7 @@ class User(Base):
 
     # Relationships
     enrollments = relationship('Enrollment', back_populates='student', cascade='all, delete-orphan')
+    courses = relationship('Course', back_populates='instructor')
 
     def set_password(self, password):
         """Hash and set password"""
@@ -54,24 +56,6 @@ class User(Base):
         return f'<User {self.email}>'
 
 
-class Instructor(Base):
-    """Instructor model for course instructors"""
-    __tablename__ = 'instructors'
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(100), nullable=False)
-    designation = Column(String(200), nullable=True)
-    image = Column(String(500), nullable=True)
-    
-    # Timestamps
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-
-    # Relationships
-    courses = relationship('Course', back_populates='instructor')
-
-    def __repr__(self):
-        return f'<Instructor {self.name}>'
 
 
 class Category(Base):
@@ -98,7 +82,7 @@ class Course(Base):
     __tablename__ = 'courses'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    instructor_id = Column(UUID(as_uuid=True), ForeignKey('instructors.id'), nullable=False)
+    instructor_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=False)
     
     # Basic Information
@@ -124,7 +108,7 @@ class Course(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     # Relationships
-    instructor = relationship('Instructor', back_populates='courses')
+    instructor = relationship('User', back_populates='courses')
     category = relationship('Category', back_populates='courses')
     lessons = relationship('Lesson', back_populates='course', cascade='all, delete-orphan', order_by='Lesson.order')
     enrollments = relationship('Enrollment', back_populates='course', cascade='all, delete-orphan')

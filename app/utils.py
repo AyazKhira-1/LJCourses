@@ -30,10 +30,19 @@ def get_current_user_from_session():
     return None
 
 def auth_required(f):
-    """Decorator to require login"""
+    """Decorator to require login - also verifies user exists in DB"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             return redirect(url_for('auth.student_login'))
+        # Verify the user actually exists in the database (handles DB reset)
+        db = SessionLocal()
+        try:
+            user = get_user_by_id(db, session['user_id'])
+            if user is None:
+                session.clear()
+                return redirect(url_for('auth.student_login'))
+        finally:
+            db.close()
         return f(*args, **kwargs)
     return decorated_function

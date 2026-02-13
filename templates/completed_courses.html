@@ -34,7 +34,7 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title fw-bold mb-1">{{ enrollment.course.title }}</h5>
-                    <p class="card-text text-secondary small mb-2">by {{ enrollment.course.instructor.name }}</p>
+                    <p class="card-text text-secondary small mb-2">by {{ enrollment.course.instructor.full_name }}</p>
                     {% if enrollment.course.duration_hours %}
                     <p class="card-text text-secondary small mb-3">
                         <span class="material-icons align-middle" style="font-size: 1rem;">schedule</span>

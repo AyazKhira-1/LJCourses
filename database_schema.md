@@ -1,152 +1,190 @@
-# Database Schema Documentation
+# 🗄️ Database Schema — LJCourses Platform
 
-This document outlines the database schema for the LJCourses platform, including tables, columns, and relationships.
+> Complete schema documentation for the LJCourses learning platform.
+> All primary keys use **UUID v4**. Timestamps use **DateTime** with auto-population.
 
-## Users Table (`users`)
+---
 
-Stores information about all users (students, instructors, admins).
+## Overview
 
-| Column          | Type        | Description                            |
-|:----------------|:------------|:---------------------------------------|
-| `id`            | UUID        | Primary Key                            |
-| `email`         | String(120) | Unique email address                   |
-| `password_hash` | String(255) | Hashed password                        |
-| `full_name`     | String(100) | User's full name                       |
-| `role`          | String(20)  | Role: 'student', 'instructor', 'admin' |
-| `profile_image` | String(255) | URL to profile image                   |
-| `bio`           | Text        | User biography                         |
-| `major`         | String(100) | Student's major or field of study      |
-| `is_active`     | Boolean     | Account status                         |
-| `created_at`    | DateTime    | Timestamp of creation                  |
-| `updated_at`    | DateTime    | Timestamp of last update               |
-| `last_login`    | DateTime    | Timestamp of last login                |
+The database consists of **6 tables** organized around users, courses, and progress tracking:
 
-## Instructors Table (`instructors`)
+```mermaid
+graph LR
+    A[Users] -->|enrolls in| B[Enrollments]
+    B -->|for| C[Courses]
+    C -->|belongs to| D[Categories]
+    C -->|taught by| A
+    C -->|contains| E[Lessons]
+    B -->|tracks| F[LessonProgress]
+    E -->|tracked by| F
+```
 
-Stores details specific to instructors.
+---
 
-| Column        | Type        | Description              |
-|:--------------|:------------|:-------------------------|
-| `id`          | UUID        | Primary Key              |
-| `name`        | String(100) | Instructor's name        |
-| `designation` | String(200) | Professional title       |
-| `image`       | String(500) | URL to instructor image  |
-| `created_at`  | DateTime    | Timestamp of creation    |
-| `updated_at`  | DateTime    | Timestamp of last update |
+## 👤 Users (`users`)
 
-## Categories Table (`categories`)
+Stores all users — **students**, **instructors**, and **admins** — in a single table differentiated by `role`.
 
-Categorizes courses.
+| Column          | Type          | Constraints                   | Description                            |
+|:----------------|:--------------|:------------------------------|:---------------------------------------|
+| `id`            | `UUID`        | **PK**, default `uuid4`       | Unique identifier                      |
+| `email`         | `String(120)` | **Unique**, Not Null, Indexed | User email address                     |
+| `password_hash` | `String(255)` | Not Null                      | Bcrypt/Werkzeug hashed password        |
+| `full_name`     | `String(100)` | Not Null                      | Display name                           |
+| `role`          | `String(20)`  | Not Null, default `'student'` | One of: `student`, `instructor`, `hod` |
+| `profile_image` | `String(255)` | Nullable                      | Path to uploaded profile photo         |
+| `bio`           | `Text`        | Nullable                      | User biography                         |
+| `major`         | `String(100)` | Nullable                      | Student's field of study               |
+| `designation`   | `String(200)` | Nullable                      | Professional title (for instructors)   |
+| `is_active`     | `Boolean`     | default `False`               | Account active status                  |
+| `created_at`    | `DateTime`    | Not Null, auto                | Account creation timestamp             |
+| `updated_at`    | `DateTime`    | auto on update                | Last modification timestamp            |
+| `last_login`    | `DateTime`    | Nullable                      | Most recent login timestamp            |
 
-| Column       | Type        | Description                |
-|:-------------|:------------|:---------------------------|
-| `id`         | UUID        | Primary Key                |
-| `name`       | String(100) | Category name (Unique)     |
-| `slug`       | String(100) | URL-friendly slug (Unique) |
-| `created_at` | DateTime    | Timestamp of creation      |
-| `updated_at` | DateTime    | Timestamp of last update   |
+**Relationships:**
+- `enrollments` → One-to-Many with `Enrollment` (as student)
+- `courses` → One-to-Many with `Course` (as instructor)
 
-## Courses Table (`courses`)
+---
 
-Stores course information.
+## 📂 Categories (`categories`)
 
-| Column                | Type          | Description                     |
-|:----------------------|:--------------|:--------------------------------|
-| `id`                  | UUID          | Primary Key                     |
-| `instructor_id`       | UUID          | Foreign Key -> `instructors.id` |
-| `category_id`         | UUID          | Foreign Key -> `categories.id`  |
-| `title`               | String(200)   | Course title                    |
-| `slug`                | String(200)   | URL-friendly slug (Unique)      |
-| `description`         | Text          | Detailed course description     |
-| `small_description`   | Text          | Brief summary                   |
-| `thumbnail`           | String(500)   | URL to thumbnail image          |
-| `duration_hours`      | Float         | Course duration in hours        |
-| `difficulty_level`    | String(50)    | Difficulty level                |
-| `rating`              | Float         | Average rating (0-5)            |
-| `course_purpose`      | Text          | Purpose of the course           |
-| `learning_objectives` | ARRAY(Text)   | List of objectives              |
-| `topics_covered`      | ARRAY(String) | List of topics                  |
-| `published_at`        | DateTime      | Publication date                |
-| `created_at`          | DateTime      | Timestamp of creation           |
-| `updated_at`          | DateTime      | Timestamp of last update        |
+Course categories for organization and filtering.
 
-## Lessons Table (`lessons`)
+| Column       | Type          | Constraints                   | Description                 |
+|:-------------|:--------------|:------------------------------|:----------------------------|
+| `id`         | `UUID`        | **PK**, default `uuid4`       | Unique identifier           |
+| `name`       | `String(100)` | **Unique**, Not Null          | Category display name       |
+| `slug`       | `String(100)` | **Unique**, Not Null, Indexed | URL-friendly identifier     |
+| `created_at` | `DateTime`    | Not Null, auto                | Creation timestamp          |
+| `updated_at` | `DateTime`    | auto on update                | Last modification timestamp |
 
-Individual lessons within a course.
+**Relationships:**
+- `courses` → One-to-Many with `Course`
 
-| Column           | Type        | Description                 |
-|:-----------------|:------------|:----------------------------|
-| `id`             | UUID        | Primary Key                 |
-| `course_id`      | UUID        | Foreign Key -> `courses.id` |
-| `order`          | Integer     | Order of the lesson         |
-| `title`          | String(200) | Lesson title                |
-| `description`    | Text        | Lesson description          |
-| `video_duration` | Integer     | Duration in seconds         |
-| `video_url`      | String(500) | URL to video file           |
-| `created_at`     | DateTime    | Timestamp of creation       |
-| `updated_at`     | DateTime    | Timestamp of last update    |
+---
 
-## Enrollments Table (`enrollments`)
+## 📚 Courses (`courses`)
 
-Tracks student usage of courses.
+Core course information including metadata, content details, and extended descriptions.
 
-| Column          | Type     | Description                        |
-|:----------------|:---------|:-----------------------------------|
-| `id`            | UUID     | Primary Key                        |
-| `student_id`    | UUID     | Foreign Key -> `users.id`          |
-| `course_id`     | UUID     | Foreign Key -> `courses.id`        |
-| `enrolled_at`   | DateTime | Date of enrollment                 |
-| `completed_at`  | DateTime | Date of completion (if applicable) |
-| `last_accessed` | DateTime | Timestamp of last access           |
+| Column                | Type            | Constraints                        | Description                                  |
+|:----------------------|:----------------|:-----------------------------------|:---------------------------------------------|
+| `id`                  | `UUID`          | **PK**, default `uuid4`            | Unique identifier                            |
+| `instructor_id`       | `UUID`          | **FK** → `users.id`, Not Null      | Course instructor                            |
+| `category_id`         | `UUID`          | **FK** → `categories.id`, Not Null | Course category                              |
+| `title`               | `String(200)`   | Not Null                           | Course title                                 |
+| `slug`                | `String(200)`   | **Unique**, Not Null, Indexed      | URL-friendly identifier                      |
+| `small_description`   | `Text`          | Nullable                           | Brief summary for cards                      |
+| `description`         | `Text`          | Nullable                           | Full course description                      |
+| `thumbnail`           | `String(500)`   | Nullable                           | Thumbnail image URL                          |
+| `duration_hours`      | `Float`         | Nullable                           | Total duration in hours (e.g., `12.5`)       |
+| `difficulty_level`    | `String(50)`    | Nullable                           | e.g., `Beginner`, `Intermediate`, `Advanced` |
+| `rating`              | `Float`         | Nullable, default `0.0`            | Average rating (0–5)                         |
+| `course_purpose`      | `Text`          | Nullable                           | Why take this course                         |
+| `learning_objectives` | `ARRAY(Text)`   | Nullable                           | List of learning outcomes                    |
+| `topics_covered`      | `ARRAY(String)` | Nullable                           | List of topics                               |
+| `published_at`        | `DateTime`      | Nullable                           | Publication date                             |
+| `created_at`          | `DateTime`      | Not Null, auto                     | Creation timestamp                           |
+| `updated_at`          | `DateTime`      | auto on update                     | Last modification timestamp                  |
 
-**Constraints**: Unique constraint on (`student_id`, `course_id`).
+**Relationships:**
+- `instructor` → Many-to-One with `User`
+- `category` → Many-to-One with `Category`
+- `lessons` → One-to-Many with `Lesson` (ordered by `Lesson.order`, cascade delete)
+- `enrollments` → One-to-Many with `Enrollment` (cascade delete)
 
-## Lesson Progress Table (`lesson_progress`)
+---
 
-Tracks completion status of individual lessons.
+## 🎬 Lessons (`lessons`)
 
-| Column          | Type     | Description                     |
-|:----------------|:---------|:--------------------------------|
-| `id`            | UUID     | Primary Key                     |
-| `enrollment_id` | UUID     | Foreign Key -> `enrollments.id` |
-| `lesson_id`     | UUID     | Foreign Key -> `lessons.id`     |
-| `is_completed`  | Boolean  | Completion status               |
-| `started_at`    | DateTime | When the lesson was started     |
-| `completed_at`  | DateTime | When the lesson was completed   |
-| `last_accessed` | DateTime | Last accessed timestamp         |
+Individual video lessons within a course, ordered sequentially.
 
-## ER Diagram (Textual Representation)
+| Column           | Type          | Constraints                     | Description                       |
+|:-----------------|:--------------|:--------------------------------|:----------------------------------|
+| `id`             | `UUID`        | **PK**, default `uuid4`         | Unique identifier                 |
+| `course_id`      | `UUID`        | **FK** → `courses.id`, Not Null | Parent course                     |
+| `order`          | `Integer`     | Not Null                        | Sequential position within course |
+| `title`          | `String(200)` | Not Null                        | Lesson title                      |
+| `description`    | `Text`        | Nullable                        | Lesson description                |
+| `video_duration` | `Integer`     | Nullable                        | Duration in **seconds**           |
+| `video_url`      | `String(500)` | Nullable                        | YouTube or video file URL         |
+| `created_at`     | `DateTime`    | Not Null, auto                  | Creation timestamp                |
+| `updated_at`     | `DateTime`    | auto on update                  | Last modification timestamp       |
+
+**Relationships:**
+- `course` → Many-to-One with `Course`
+- `lesson_progress` → One-to-Many with `LessonProgress` (cascade delete)
+
+---
+
+## 📝 Enrollments (`enrollments`)
+
+Links students to courses they've enrolled in.
+
+| Column          | Type       | Constraints                     | Description                     |
+|:----------------|:-----------|:--------------------------------|:--------------------------------|
+| `id`            | `UUID`     | **PK**, default `uuid4`         | Unique identifier               |
+| `student_id`    | `UUID`     | **FK** → `users.id`, Not Null   | Enrolled student                |
+| `course_id`     | `UUID`     | **FK** → `courses.id`, Not Null | Enrolled course                 |
+| `enrolled_at`   | `DateTime` | Not Null, auto                  | Enrollment date                 |
+| `completed_at`  | `DateTime` | Nullable                        | Completion date (if finished)   |
+| `last_accessed` | `DateTime` | Nullable                        | Last time student opened course |
+
+> **Constraint:** `UNIQUE(student_id, course_id)` — A student can only enroll once per course.
+
+**Relationships:**
+- `student` → Many-to-One with `User`
+- `course` → Many-to-One with `Course`
+- `lesson_progress` → One-to-Many with `LessonProgress` (cascade delete)
+
+---
+
+## 📈 Lesson Progress (`lesson_progress`)
+
+Tracks per-lesson completion status for each enrollment.
+
+| Column          | Type       | Constraints                         | Description                          |
+|:----------------|:-----------|:------------------------------------|:-------------------------------------|
+| `id`            | `UUID`     | **PK**, default `uuid4`             | Unique identifier                    |
+| `enrollment_id` | `UUID`     | **FK** → `enrollments.id`, Not Null | Parent enrollment                    |
+| `lesson_id`     | `UUID`     | **FK** → `lessons.id`, Not Null     | Associated lesson                    |
+| `is_completed`  | `Boolean`  | default `False`                     | Whether the lesson is complete       |
+| `started_at`    | `DateTime` | Nullable                            | When the student started the lesson  |
+| `completed_at`  | `DateTime` | Nullable                            | When the student finished the lesson |
+| `last_accessed` | `DateTime` | Nullable                            | Last access timestamp                |
+
+**Relationships:**
+- `enrollment` → Many-to-One with `Enrollment`
+- `lesson` → Many-to-One with `Lesson`
+
+---
+
+## 🔗 Entity Relationship Diagram
 
 ```mermaid
 erDiagram
     Users {
         UUID id PK
-        String email
+        String email UK
         String password_hash
         String full_name
         String role
         String profile_image
         Text bio
         String major
+        String designation
         Boolean is_active
         DateTime created_at
         DateTime updated_at
         DateTime last_login
     }
 
-    Instructors {
-        UUID id PK
-        String name
-        String designation
-        String image
-        DateTime created_at
-        DateTime updated_at
-    }
-
     Categories {
         UUID id PK
-        String name
-        String slug
+        String name UK
+        String slug UK
         DateTime created_at
         DateTime updated_at
     }
@@ -156,9 +194,9 @@ erDiagram
         UUID instructor_id FK
         UUID category_id FK
         String title
-        String slug
-        Text description
+        String slug UK
         Text small_description
+        Text description
         String thumbnail
         Float duration_hours
         String difficulty_level
@@ -203,7 +241,7 @@ erDiagram
     }
 
     Users ||--o{ Enrollments : "enrolls in"
-    Instructors ||--o{ Courses : "teaches"
+    Users ||--o{ Courses : "teaches"
     Categories ||--o{ Courses : "categorizes"
     Courses ||--o{ Lessons : "contains"
     Courses ||--o{ Enrollments : "has"

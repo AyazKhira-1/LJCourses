@@ -35,7 +35,8 @@ def get_course_by_slug(db: Session, slug: str, include_relations: bool = False) 
 def get_all_courses(db: Session, skip: int = 0, limit: int = 100, 
                     category_id: Optional[UUID] = None,
                     instructor_id: Optional[UUID] = None,
-                    difficulty_level: Optional[str] = None) -> list[type[Course]]:
+                    difficulty_level: Optional[str] = None,
+                    search: Optional[str] = None) -> list[type[Course]]:
     """Get all courses with optional filters"""
     query = db.query(Course).options(
         joinedload(Course.instructor),
@@ -48,6 +49,18 @@ def get_all_courses(db: Session, skip: int = 0, limit: int = 100,
         query = query.filter(Course.instructor_id == instructor_id)
     if difficulty_level:
         query = query.filter(Course.difficulty_level == difficulty_level)
+    if search:
+        search_term = f"%{search}%"
+        from sqlalchemy import or_
+        from app.models import User
+        query = query.join(Course.instructor).filter(
+            or_(
+                Course.title.ilike(search_term),
+                Course.description.ilike(search_term),
+                Course.small_description.ilike(search_term),
+                User.full_name.ilike(search_term)
+            )
+        )
     
     return query.offset(skip).limit(limit).all()
 

@@ -94,9 +94,9 @@ function populateSettings(userData) {
     // Show/hide remove photo button based on whether user has custom photo
     const removePhotoBtn = document.getElementById('remove-photo-btn');
     if (removePhotoBtn) {
-        // Simple check: if path contains 'uploads', it's custom. 
-        // Or if it's not the default google image.
-        const isDefault = !userData.profile_image || userData.profile_image.includes('lh3.googleusercontent.com');
+        // Simple check: if path contains 'uploads', it's custom.
+        // Otherwise it's the default avatar.
+        const isDefault = !userData.profile_image || userData.profile_image.includes('default-user.svg');
         removePhotoBtn.style.display = isDefault ? 'none' : 'inline-block';
     }
 }

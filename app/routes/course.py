@@ -23,12 +23,15 @@ def home():
 @bp.route('/browse-courses')
 def browse_courses():
     """Browse available courses page"""
+    PER_PAGE = 9
     db = SessionLocal()
     try:
         user = get_current_user_from_session()
         
         # Get filter parameters
         category_slug = request.args.get('category')
+        search_query = request.args.get('q', '').strip()
+        page = request.args.get('page', 1, type=int)
         
         # Get all categories for filter buttons
         categories = get_all_categories(db)
@@ -40,14 +43,69 @@ def browse_courses():
             if category:
                 category_id = category.id
         
-        courses = get_all_courses(db, category_id=category_id)
+        skip = (page - 1) * PER_PAGE
+        courses = get_all_courses(db, skip=skip, limit=PER_PAGE, category_id=category_id, search=search_query or None)
+        
+        # Check if there are more courses
+        next_courses = get_all_courses(db, skip=skip + PER_PAGE, limit=1, category_id=category_id, search=search_query or None)
+        has_more = len(next_courses) > 0
         
         return render_template('browse-courses.html', 
                              courses=courses, 
                              categories=categories,
                              selected_category=category_slug or 'all',
+                             search_query=search_query,
                              user=user,
-                             format_duration=format_duration)
+                             format_duration=format_duration,
+                             current_page=page,
+                             has_more=has_more)
+    finally:
+        db.close()
+
+
+@bp.route('/api/browse-courses')
+def api_browse_courses():
+    """API endpoint to fetch more courses for Load More button"""
+    PER_PAGE = 9
+    db = SessionLocal()
+    try:
+        category_slug = request.args.get('category')
+        search_query = request.args.get('q', '').strip()
+        page = request.args.get('page', 1, type=int)
+        
+        category_id = None
+        if category_slug and category_slug != 'all':
+            category = get_category_by_slug(db, category_slug)
+            if category:
+                category_id = category.id
+        
+        skip = (page - 1) * PER_PAGE
+        courses = get_all_courses(db, skip=skip, limit=PER_PAGE, category_id=category_id, search=search_query or None)
+        
+        next_courses = get_all_courses(db, skip=skip + PER_PAGE, limit=1, category_id=category_id, search=search_query or None)
+        has_more = len(next_courses) > 0
+        
+        courses_data = []
+        for course in courses:
+            hours = course.duration_hours or 0
+            h = int(hours)
+            m = int((hours - h) * 60)
+            duration_str = f"{h}h {m}m" if m > 0 else f"{h}h"
+            
+            courses_data.append({
+                'title': course.title,
+                'slug': course.slug,
+                'thumbnail': course.thumbnail or '',
+                'rating': str(course.rating or '0.0'),
+                'duration': duration_str,
+                'small_description': course.small_description or (course.description[:100] + '...' if course.description else 'No description available.'),
+                'category_name': course.category.name if course.category else '',
+                'instructor_name': course.instructor.full_name if course.instructor else '',
+                'instructor_image': course.instructor.profile_image if course.instructor and course.instructor.profile_image else '/static/images/default-instructor.svg',
+                'url': url_for('course.course_overview', course_slug=course.slug),
+            })
+        
+        return {'courses': courses_data, 'has_more': has_more, 'page': page}
     finally:
         db.close()
 

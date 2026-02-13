@@ -13,6 +13,19 @@
             classes.</p>
     </div>
 
+    {% if search_query %}
+    <!-- Search Results Banner -->
+    <div class="alert alert-light d-flex align-items-center justify-content-between mb-4 border rounded-3 py-2 px-3">
+        <span class="text-secondary">
+            <span class="material-icons align-middle me-1" style="font-size: 1.1rem;">search</span>
+            Showing results for "<strong>{{ search_query }}</strong>"
+        </span>
+        <a href="{{ url_for('course.browse_courses') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            <span class="material-icons align-middle" style="font-size: 1rem;">close</span> Clear
+        </a>
+    </div>
+    {% endif %}
+
     <!-- Category Filters -->
     <div class="d-flex flex-wrap gap-2 mb-4">
         <a href="{{ url_for('course.browse_courses') }}"
@@ -25,15 +38,14 @@
     </div>
 
     <!-- Course Grid -->
-    <div class="row g-4">
+    <div class="row g-4" id="course-grid">
         {% if courses %}
         {% for course in courses %}
         <!-- Course Card -->
         <div class="col-12 col-md-6 col-xl-4">
             <div class="card h-100 border-0 shadow-sm course-card">
                 <div class="position-relative overflow-hidden" style="height: 12rem;">
-                    <img src="{{ course.thumbnail or 'https://via.placeholder.com/400x200?text=Course' }}"
-                        class="w-100 h-100 object-fit-cover" alt="{{ course.title }}">
+                    <img src="/{{ course.thumbnail }}" class="w-100 h-100 object-fit-cover" alt="{{ course.title }}">
                     <span
                         class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small">{{
                         course.category.name }}</span>
@@ -53,10 +65,10 @@
                     <div class="mt-auto pt-3 border-top">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div class="d-flex align-items-center">
-                                <img src="{{ course.instructor.image or 'https://via.placeholder.com/40' }}"
+                                <img src="{{ course.instructor.profile_image or '/static/images/default-instructor.svg' }}"
                                     class="rounded-circle me-2" style="width: 1.5rem; height: 1.5rem;"
-                                    alt="{{ course.instructor.name }}">
-                                <span class="small fw-medium">{{ course.instructor.name }}</span>
+                                    alt="{{ course.instructor.full_name }}">
+                                <span class="small fw-medium">{{ course.instructor.full_name }}</span>
                             </div>
                         </div>
                         <a href="{{ url_for('course.course_overview', course_slug=course.slug) }}"
@@ -83,9 +95,10 @@
     </div>
 
     <!-- Load More Button -->
-    {% if courses|length >= 9 %}
-    <div class="mt-5 text-center pb-4">
-        <button class="btn btn-outline-secondary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2">
+    {% if has_more %}
+    <div class="mt-5 text-center pb-4" id="load-more-wrapper">
+        <button id="load-more-btn" data-page="{{ current_page }}" data-category="{{ selected_category }}"
+            class="btn btn-outline-secondary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2">
             Load More Courses
             <span class="material-icons" style="font-size: 1.25rem;">expand_more</span>
         </button>
@@ -93,4 +106,86 @@
     {% endif %}
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('load-more-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', async function () {
+            const nextPage = parseInt(btn.dataset.page) + 1;
+            const category = btn.dataset.category;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Loading...';
+
+            try {
+                const params = new URLSearchParams({ page: nextPage });
+                if (category && category !== 'all') params.append('category', category);
+
+                const res = await fetch('/api/browse-courses?' + params.toString());
+                const data = await res.json();
+                const grid = document.getElementById('course-grid');
+
+                data.courses.forEach(c => {
+                    const col = document.createElement('div');
+                    col.className = 'col-12 col-md-6 col-xl-4';
+                    col.innerHTML = `
+                    <div class="card h-100 border-0 shadow-sm course-card">
+                        <div class="position-relative overflow-hidden" style="height: 12rem;">
+                            <img src="/${c.thumbnail}" class="w-100 h-100 object-fit-cover" alt="${c.title}">
+                            <span class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small">${c.category_name}</span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded small fw-semibold" style="background-color: #fef3c7; color: #f59e0b;">
+                                    <span class="material-icons" style="font-size: 1rem;">star</span>
+                                    <span>${c.rating}</span>
+                                </span>
+                                <span class="text-secondary small">${c.duration}</span>
+                            </div>
+                            <h5 class="card-title fw-bold mb-2">${c.title}</h5>
+                            <p class="card-text text-secondary small mb-3">${c.small_description}</p>
+                            <div class="mt-auto pt-3 border-top">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${c.instructor_image}" class="rounded-circle me-2" style="width: 1.5rem; height: 1.5rem;" alt="${c.instructor_name}">
+                                        <span class="small fw-medium">${c.instructor_name}</span>
+                                    </div>
+                                </div>
+                                <a href="${c.url}" class="btn btn-primary w-100">View Course</a>
+                            </div>
+                        </div>
+                    </div>`;
+                    grid.appendChild(col);
+                });
+
+                btn.dataset.page = nextPage;
+
+                if (data.has_more) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Load More Courses <span class="material-icons" style="font-size: 1.25rem;">expand_more</span>';
+                } else {
+                    const wrapper = document.getElementById('load-more-wrapper');
+                    wrapper.innerHTML = '';
+                    const topBtn = document.createElement('button');
+                    topBtn.className = 'btn btn-outline-secondary rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2';
+                    topBtn.innerHTML = 'Back to Top <span class="material-icons" style="font-size: 1.25rem;">arrow_upward</span>';
+                    topBtn.addEventListener('click', function () {
+                        const scrollContainer = document.querySelector('.overflow-auto');
+                        if (scrollContainer) {
+                            scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    });
+                    wrapper.appendChild(topBtn);
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = 'Load More Courses <span class="material-icons" style="font-size: 1.25rem;">expand_more</span>';
+            }
+        });
+    });
+</script>
 {% endblock %}

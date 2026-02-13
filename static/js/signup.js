@@ -204,22 +204,6 @@ async function handleSignUpSubmit(event) {
  * Initialize sign-up page functionality
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Google Sign Up Button Handler
-    const googleSignUpBtn = document.querySelector('.google-icon');
-    if (googleSignUpBtn && googleSignUpBtn.closest('button')) {
-        googleSignUpBtn.closest('button').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            showNotification(
-                'Google OAuth integration coming soon. This will redirect to Google authentication.',
-                'info'
-            );
-
-            // Production: Redirect to Google OAuth
-            // window.location.href = '/auth/google';
-        });
-    }
-
     // Password visibility toggle
     const passwordToggles = document.querySelectorAll('.form-icon-right.clickable');
     passwordToggles.forEach(toggle => {

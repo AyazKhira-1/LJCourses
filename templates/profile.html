@@ -14,7 +14,7 @@
             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                 <div class="position-relative">
                     <img id="profile-photo"
-                        src="{{ user.profile_image if user.profile_image else 'https://lh3.googleusercontent.com/aida-public/AB6AXuCGREimMqfkf59_cQFeFRyZhJ7dnNOxFTA76quRe9Xh7lFuFjiAb9zNThW98S85U3y0stXXHUu52pTnYyMNoMApThwBdAxf9wRz5uyhO267V6MGaILsWFT9eGc-xonTGNMZ9K9Mz5nGmKwI2MZYdXv4Erz4Lts0E0npK6ZC2GkM1gC1iUMiYqrMT_qzkeCwSsm32MYw49iQ_tP1bwxd7bOqcdIBikk0JdgON-eYHIVx6lI-2RtzoOsBDHOhSnvhmW2_bUpJF9SwZAo' }}"
+                        src="{{ user.profile_image if user.profile_image else '/static/images/default-user.svg' }}"
                         class="rounded-circle" style="width: 7.5rem; height: 7.5rem; object-fit: cover;" alt="Profile">
                     <input type="file" id="photo-file-input" accept="image/*" style="display: none;">
                     <button id="photo-upload-btn" type="button"

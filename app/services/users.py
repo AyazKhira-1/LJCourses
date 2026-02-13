@@ -58,7 +58,7 @@ def create_user(db: Session, email: str, password: str, full_name: str,
 
 def _delete_profile_image_file(image_url: str) -> None:
     """Helper to delete profile image file from disk"""
-    if not image_url or 'lh3.googleusercontent.com' in image_url:
+    if not image_url or 'default-user.svg' in image_url:
         return
 
     from pathlib import Path

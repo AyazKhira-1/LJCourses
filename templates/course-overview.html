@@ -27,8 +27,8 @@
             <!-- Left Image -->
             <div class="col-md-5 d-flex">
                 <div class="position-relative w-100">
-                    <img src="{{ course.thumbnail or 'https://via.placeholder.com/500x300?text=Course' }}"
-                        class="w-100 h-100 object-fit-cover" alt="{{ course.title }}">
+                    <img src="/{{ course.thumbnail }}" class="w-100 h-100"
+                        style="object-fit: contain; background-color: #1a1a2e;" alt="{{ course.title }}">
                     <span
                         class="position-absolute top-0 start-0 m-3 badge bg-white text-dark fw-bold text-uppercase small shadow-sm">
                         {{ course.category.name }}
@@ -73,11 +73,10 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3 mt-3">
 
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ course.instructor.image or 'https://via.placeholder.com/48' }}"
-                                class="rounded-circle" style="width:3rem;height:3rem;"
-                                alt="{{ course.instructor.name }}">
+                            <img src="/{{ course.instructor.profile_image }}" class="rounded-circle"
+                                style="width:3rem;height:3rem;" alt="{{ course.instructor.full_name }}">
                             <div>
-                                <p class="mb-0 fw-bold">{{ course.instructor.name }}</p>
+                                <p class="mb-0 fw-bold">{{ course.instructor.full_name }}</p>
                                 <p class="mb-0 text-secondary small">
                                     {{ course.instructor.designation or 'Instructor' }}
                                 </p>

@@ -45,7 +45,7 @@
                 <div class="d-flex align-items-center gap-3">
                     <button class="btn btn-link text-secondary p-2" onclick="toggleDarkMode()"
                         aria-label="Toggle Theme">
-                        <span class="material-icons icon-dark-mode">wb_sunny</span>
+                        <span class="material-icons icon-dark-mode">dark_mode</span>
                         <span class="material-icons icon-light-mode">nightlight</span>
                     </button>
                     <div class="vr" style="height: 2.5rem;"></div>
@@ -58,7 +58,7 @@
                                 {{ user.role|title if user else 'Loading...' }}</p>
                         </div>
                         <img id="header-user-photo"
-                            src="{{ user.profile_image if user and user.profile_image else 'https://via.placeholder.com/40' }}"
+                            src="{{ user.profile_image if user and user.profile_image else '/static/images/default-user.svg' }}"
                             class="rounded-circle border border-2 border-white shadow-sm profile-image"
                             style="width: 2.5rem; height: 2.5rem;" alt="Profile">
                     </a>
@@ -79,9 +79,10 @@
             {% if lesson %}
             <!-- Video Player -->
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-lg mb-4">
-                <video id="lesson-video" controls class="w-100 h-100" style="background-color: #000;">
+                <video id="lesson-video" controls controlsList="nodownload" class="w-100 h-100"
+                    style="background-color: #000;">
                     <source
-                        src="{{ lesson.video_url or 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' }}"
+                        src="/{{ lesson.video_url if lesson.video_url else 'static/uploads/course_lessons/LJ_University_Green_Campus.mp4'}}"
                         type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -235,4 +236,13 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
+<script>
+    // Auto-scroll sidebar to current lesson
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeLesson = document.querySelector('.sidebar-right .lesson-item.active');
+        if (activeLesson) {
+            activeLesson.scrollIntoView({ block: 'center', behavior: 'instant' });
+        }
+    });
+</script>
 {% endblock %}
