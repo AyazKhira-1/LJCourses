@@ -1,7 +1,5 @@
 """
 Database seeding script for LJCourses platform
-Populates all tables with LJIET First Year Engineering YouTube channel courses
-Source: https://www.youtube.com/@firstyearengineering_ljiet1008/courses
 """
 from datetime import datetime, timedelta
 from app.db import SessionLocal, engine
@@ -34,14 +32,14 @@ def seed_categories(db):
         {"name": "Environmental Studies", "slug": "environmental-studies"},
         {"name": "Engineering Drawing", "slug": "engineering-drawing"},
     ]
-    
+
     categories = []
     for cat_data in categories_data:
         category = Category(**cat_data)
         db.add(category)
         categories.append(category)
         print(f"  ✓ Category: {cat_data['name']}")
-    
+
     db.commit()
     return categories
 
@@ -50,117 +48,117 @@ def seed_instructors(db):
     print("\nSeeding instructor users...")
     instructors_data = [
         {
-            "full_name": "Prof. DBP", 
+            "full_name": "Prof. DBP",
             "designation": "Mechanical Engineering Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/DBP.png",
             "email": "dbp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. DRP", 
+            "full_name": "Prof. DRP",
             "designation": "Mathematics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/DRP.png",
             "email": "drp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. AAP", 
+            "full_name": "Prof. AAP",
             "designation": "Electronics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/AAP.png",
             "email": "aap@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. RVT", 
+            "full_name": "Prof. RVT",
             "designation": "Physics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/RVT.png",
             "email": "rvt@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. HBD", 
+            "full_name": "Prof. HBD",
             "designation": "Electronics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/HBD.png",
             "email": "hbd@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. KDL", 
+            "full_name": "Prof. KDL",
             "designation": "Computer Science Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/KDL.png",
             "email": "kdl@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. HRS", 
+            "full_name": "Prof. HRS",
             "designation": "Mathematics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/HRS.png",
             "email": "hrs@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. NRS", 
+            "full_name": "Prof. NRS",
             "designation": "Electrical Engineering Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/NRS.png",
             "email": "nrs@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. SAB", 
+            "full_name": "Prof. SAB",
             "designation": "Mathematics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/SAB.png",
             "email": "sab@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. AAG", 
+            "full_name": "Prof. AAG",
             "designation": "Communication & Environmental Studies Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/AAG.png",
             "email": "aag@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. YIK", 
+            "full_name": "Prof. YIK",
             "designation": "Computer Science Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/YIK.png",
             "email": "yik@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. ANP", 
+            "full_name": "Prof. ANP",
             "designation": "Engineering Graphics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/ANP.png",
             "email": "anp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. PKS", 
+            "full_name": "Prof. PKS",
             "designation": "Mathematics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/PKS.png",
             "email": "pks@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. SPJ", 
+            "full_name": "Prof. SPJ",
             "designation": "Chemistry Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/SPJ.png",
             "email": "spj@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. MMP", 
+            "full_name": "Prof. MMP",
             "designation": "Mathematics Faculty, LJIET",
             "profile_image": "static/uploads/profile_photos/instructors/MMP.png",
             "email": "mmp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. ARP", 
+            "full_name": "Prof. ARP",
             "designation": "Engineering Graphics Faculty, LJIET",
             "email": "arp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. VVP", 
+            "full_name": "Prof. VVP",
             "designation": "Mechanical Engineering Faculty, LJIET",
             "email": "vvp@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. PBS", 
+            "full_name": "Prof. PBS",
             "designation": "Electrical Engineering Faculty, LJIET",
             "email": "pbs@mail.ljku.edu.in"
         },
         {
-            "full_name": "Prof. DRS", 
+            "full_name": "Prof. DRS",
             "designation": "Electronics Faculty, LJIET",
             "email": "drs@mail.ljku.edu.in"
         }
     ]
-    
+
     instructors = []
     for instr_data in instructors_data:
         email = instr_data.pop("email")
@@ -171,11 +169,11 @@ def seed_instructors(db):
             major="Engineering",
             **instr_data
         )
-        instructor.set_password("Instructor@2024")
+        instructor.set_password("Instructor@2026")
         db.add(instructor)
         instructors.append(instructor)
         print(f"  ✓ Instructor: {instr_data['full_name']} - {instr_data['designation']}")
-    
+
     db.commit()
     return instructors
 
@@ -186,9 +184,9 @@ def seed_instructors(db):
 def seed_courses(db, categories, instructors):
     """Create courses from LJIET YouTube channel"""
     print("\nSeeding courses...")
-    
+
     cat_map = {cat.slug: cat for cat in categories}
-    
+
     courses_data = [
         {
             "instructor": instructors[0],  # DBP
@@ -463,7 +461,7 @@ def seed_courses(db, categories, instructors):
             "published_at": datetime.now() - timedelta(days=120)
         },
     ]
-    
+
     courses = []
     for course_data in courses_data:
         course = Course(
@@ -486,17 +484,17 @@ def seed_courses(db, categories, instructors):
         courses.append(course)
         course._num_lessons = course_data["num_lessons"]
         print(f"  ✓ Course: {course_data['title']} ({course_data['category'].name})")
-    
+
     db.commit()
     return courses
 
 def seed_lessons(db, courses):
     """Create lessons for each course with YouTube embed URLs"""
     print("\nSeeding lessons...")
-    
+
     # Default YouTube embed URL from LJIET channel
     video_url = "static/uploads/course_lessons/LJ_University_Green_Campus.mp4"
-    
+
     # Lesson titles per course - representative topics matching GTU syllabus
     lesson_topics = {
         "gtu-basic-mechanical-engineering-dbp": [
@@ -778,7 +776,7 @@ def seed_lessons(db, courses):
             "Newtons Forward Difference", "Newtons Backward Difference", "Course Summary",
         ],
     }
-    
+
     # Generate generic lesson titles for courses not explicitly listed
     def generate_lesson_titles(course_title, num_lessons):
         """Generate numbered lesson titles for a given course"""
@@ -786,12 +784,12 @@ def seed_lessons(db, courses):
         for i in range(1, num_lessons + 1):
             titles.append(f"Lecture {i} - {course_title}")
         return titles
-    
+
     all_lessons = []
     for course in courses:
         num = getattr(course, '_num_lessons', 10)
         slug = course.slug
-        
+
         if slug in lesson_topics:
             titles = lesson_topics[slug][:num]
             # If fewer topics than lessons, pad with numbered lectures
@@ -799,7 +797,7 @@ def seed_lessons(db, courses):
                 titles.append(f"Lecture {len(titles)+1} - {course.title}")
         else:
             titles = generate_lesson_titles(course.title, num)
-        
+
         for idx, title in enumerate(titles, 1):
             lesson = Lesson(
                 course_id=course.id,
@@ -812,14 +810,14 @@ def seed_lessons(db, courses):
             db.add(lesson)
             all_lessons.append(lesson)
         print(f"  ✓ Added {len(titles)} lessons for: {course.title}")
-    
+
     db.commit()
     return all_lessons
 
 def seed_users(db):
     """Create student and HOD user accounts"""
     print("\nSeeding student & HOD users...")
-    
+
     student_user = User(
         email="24002170410016@mail.ljku.edu.in",
         full_name="Ayaz Khira",
@@ -827,7 +825,7 @@ def seed_users(db):
         bio="Enthusiastic learner passionate about technology and innovation.",
         major="Computer Engineering"
     )
-    student_user.set_password("Student@2024")
+    student_user.set_password("Student@2026")
     db.add(student_user)
     print(f"  ✓ Student User: {student_user.email}")
 
@@ -839,10 +837,10 @@ def seed_users(db):
         bio="HOD - Computer Science Department, LJIET.",
         major="Computer Science"
     )
-    hod_user.set_password("Hod@2024")
+    hod_user.set_password("Hod@2026")
     db.add(hod_user)
     print(f"  ✓ HOD User: {hod_user.email}")
-    
+
     additional_students = [
         {"email": "28002170410017@mail.ljku.edu.in", "full_name": "Priya Sharma", "bio": "Tech enthusiast.", "major": "IT"},
         {"email": "28002170410018@mail.ljku.edu.in", "full_name": "Rahul Patel", "bio": "Future engineer.", "major": "CE"},
@@ -852,7 +850,7 @@ def seed_users(db):
         {"email": "28002170410022@mail.ljku.edu.in", "full_name": "Arjun Kumar", "bio": "Data enthusiast.", "major": "AI-ML"},
         {"email": "28002170410023@mail.ljku.edu.in", "full_name": "Sneha Patel", "bio": "Design lover.", "major": "CSD"},
     ]
-    
+
     other_students = []
     for student_data in additional_students:
         user = User(
@@ -862,22 +860,22 @@ def seed_users(db):
             bio=student_data["bio"],
             major=student_data["major"]
         )
-        user.set_password("Student@2024")
+        user.set_password("Student@2026")
         db.add(user)
         other_students.append(user)
         print(f"  ✓ Student User: {user.email}")
-    
+
     db.commit()
     return student_user, other_students, hod_user
 
 def seed_enrollments(db, students, courses):
     """Create course enrollments"""
     print("\nSeeding enrollments...")
-    
+
     main_student = students[0]
     other_students = students[1:]
     enrollments = []
-    
+
     # Enroll main student in first 4 courses
     for i, course in enumerate(courses[:4]):
         enrollment = Enrollment(
@@ -889,7 +887,7 @@ def seed_enrollments(db, students, courses):
         db.add(enrollment)
         enrollments.append(enrollment)
         print(f"  ✓ Enrolled {main_student.email} in: {course.title}")
-    
+
     import random
     for student in other_students:
         num_courses = random.randint(2, 4)
@@ -904,7 +902,7 @@ def seed_enrollments(db, students, courses):
             db.add(enrollment)
             enrollments.append(enrollment)
         print(f"  ✓ Enrolled {student.email} in {num_courses} courses")
-    
+
     db.commit()
     return enrollments
 
@@ -912,12 +910,12 @@ def seed_lesson_progress(db, enrollments, courses):
     """Create lesson progress records"""
     print("\nSeeding lesson progress...")
     import random
-    
+
     progress_count = 0
     for enrollment in enrollments:
         course = next(c for c in courses if c.id == enrollment.course_id)
         lessons = sorted(course.lessons, key=lambda l: l.order)
-        
+
         num_completed = random.randint(2, min(4, len(lessons)))
         for lesson in lessons[:num_completed]:
             progress = LessonProgress(
@@ -930,7 +928,7 @@ def seed_lesson_progress(db, enrollments, courses):
             )
             db.add(progress)
             progress_count += 1
-        
+
         if num_completed < len(lessons):
             for lesson in lessons[num_completed:num_completed+random.randint(1, 2)]:
                 if lesson.order <= len(lessons):
@@ -943,7 +941,7 @@ def seed_lesson_progress(db, enrollments, courses):
                     )
                     db.add(progress)
                     progress_count += 1
-    
+
     db.commit()
     print(f"  ✓ Created {progress_count} lesson progress records")
 
@@ -953,15 +951,15 @@ def main():
     print("LJCourses Database Seeding Script")
     print("Source: LJIET First Year Engineering YouTube Channel")
     print("="*60)
-    
+
     print("\nRecreating database tables...")
     # Drop all tables and recreate (needed to remove old 'instructors' table)
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     print("✓ Tables created")
-    
+
     db = SessionLocal()
-    
+
     try:
         clear_database(db)
         categories = seed_categories(db)
@@ -972,7 +970,7 @@ def main():
         all_students = [main_student] + other_students
         enrollments = seed_enrollments(db, all_students, courses)
         seed_lesson_progress(db, enrollments, courses)
-        
+
         print("\n" + "="*60)
         print("DATABASE SEEDING COMPLETED SUCCESSFULLY!")
         print("="*60)
@@ -985,9 +983,9 @@ def main():
         print(f"  • HOD: 1")
         print(f"  • Enrollments: {len(enrollments)}")
         print(f"\n🔐 Login Credentials:")
-        print(f"  Student: 24002170410016@mail.ljku.edu.in / Student@2024")
-        print(f"  Instructor (any): <initials>@mail.ljku.edu.in / Instructor@2024")
-        print(f"  HOD: hod@mail.ljku.edu.in / Hod@2024")
+        print(f"  Student: 24002170410016@mail.ljku.edu.in / Student@2026")
+        print(f"  Instructor (any): <initials>@mail.ljku.edu.in / Instructor@2026")
+        print(f"  HOD: hod@mail.ljku.edu.in / Hod@2026")
         print("="*60)
         
     except Exception as e:

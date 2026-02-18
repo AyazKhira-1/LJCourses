@@ -133,16 +133,6 @@ def change_password():
     user = get_current_user_from_session()
     return render_template('change_password.html', user=user)
 
-
-@bp.route('/forgot-password')
-def forgot_password():
-    """Forgot password page"""
-    return render_template('forgot_password.html')
-
-
-
-
-
 # ==================== API Endpoints ====================
 
 @bp.route('/api/auth/reset-password', methods=['POST'])

@@ -1,6 +1,6 @@
 // ============================================
 // PASSWORD RESET PAGE JAVASCRIPT
-// Shared by both change_password.html and forgot_password.html
+// Used by change_password.html
 // ============================================
 
 /**
